@@ -4,7 +4,6 @@
 
 Matrix::Matrix(){}
 
-
 Matrix::~Matrix(){}
 
 //Set number of rows and colums
@@ -24,7 +23,7 @@ Matrix::Matrix(std::vector<std::vector<double> > const &matrix) {
 }
 
 //Matrix addition
-Matrix Matrix::add(Matrix const &matrix2) {
+Matrix Matrix::Add(Matrix const &matrix2) {
 	//checking for valid inputs
 	assert(rows == matrix2.rows && columns == matrix2.columns);
 
@@ -38,7 +37,7 @@ Matrix Matrix::add(Matrix const &matrix2) {
 }
 
 //Matrix subtraction
-Matrix Matrix::subtract(Matrix const &matrix2) {
+Matrix Matrix::Subtract(Matrix const &matrix2) {
 	assert(rows == matrix2.rows && columns == matrix2.columns);
 
 	Matrix result(rows, columns);
@@ -50,21 +49,34 @@ Matrix Matrix::subtract(Matrix const &matrix2) {
 	return result;
 }
 
+//Matrix Hadamard multiplication
+Matrix Matrix::Product(Matrix const &matrix2) {
+	assert(rows == matrix2.rows && columns == matrix2.columns);
+
+	Matrix result(rows, columns);
+
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			result.matrix[i][j] = matrix[i][j] * matrix2.matrix[i][j];
+
+	return result;
+}
+
 //Matrix multiplication
-Matrix Matrix::multiply(Matrix const &matrix2) {
+Matrix Matrix::Multiply(Matrix const &matrix2) {
 	assert(columns == matrix2.rows);
 
 	Matrix result(rows, matrix2.columns);
 
 	for (int i = 0; i < rows; i++)
 		for (int j = 0; j < matrix2.columns; j++)
-			result.matrix[i][j] = dotProduct(matrix2, i, j);
+			result.matrix[i][j] = DotProduct(matrix2, i, j);
 
 	return result;
 }
 
 //Vector dot product
-int Matrix::dotProduct(Matrix const &matrix2, int &m1Row, int &m2Col) {
+int Matrix::DotProduct(Matrix const &matrix2, int &m1Row, int &m2Col) {
 
 	int result;
 
@@ -75,7 +87,7 @@ int Matrix::dotProduct(Matrix const &matrix2, int &m1Row, int &m2Col) {
 }
 
 //Matrix scalar multiplication
-Matrix Matrix::multiplyScalar(double const &scalar)
+Matrix Matrix::MultiplyScalar(double const &scalar)
 {
 	Matrix result(rows, columns);
 	
@@ -87,8 +99,43 @@ Matrix Matrix::multiplyScalar(double const &scalar)
 	return result;
 }
 
+//Matrix exponential function
+Matrix Matrix::Power(int const exponent) {
+	Matrix result(rows, columns);
+
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			for (int k = 0; k < exponent; k++)
+				result.matrix[i][j] *= matrix[i][j];
+
+	return result;
+}
+
+//Matrix summation
+double Matrix::Sum() {
+	double sum = 0;
+
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			sum += matrix[i][j];
+
+	return sum;
+}
+
+/*
+Matrix Matrix::Divide(int const divisor) {
+	Matrix result(rows, columns);
+
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			result.matrix[i][j] = matrix[i][j] / divisor;
+
+	return result;
+}
+*/
+
 //Matrix transposition
-Matrix Matrix::transpose() {
+Matrix Matrix::Transpose() {
 	Matrix result(columns, rows);
 
 	for (int i = 0; i < rows; i++)
@@ -96,4 +143,8 @@ Matrix Matrix::transpose() {
 			result.matrix[j][i] = matrix[i][j];
 
 	return result;
+}
+
+Matrix Matrix::ApplyFunction(double (*function)(double)) const {
+
 }
