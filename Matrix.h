@@ -14,8 +14,8 @@ public:
 
 	Matrix Add(Matrix const &matrix2);
 	Matrix Subtract(Matrix const &matrix2);
-	Matrix Product(Matrix const &matrix2);
 	Matrix Multiply(Matrix const &matrix2);
+	Matrix Dot(Matrix const &matrix2);
 	int DotProduct(Matrix const &matrix2, int &m1Row, int &m2Col);
 	Matrix MultiplyScalar(double const &scalar);
 	Matrix Power(int const exponent);

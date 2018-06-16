@@ -50,7 +50,7 @@ Matrix Matrix::Subtract(Matrix const &matrix2) {
 }
 
 //Matrix Hadamard multiplication
-Matrix Matrix::Product(Matrix const &matrix2) {
+Matrix Matrix::Multiply(Matrix const &matrix2) {
 	assert(rows == matrix2.rows && columns == matrix2.columns);
 
 	Matrix result(rows, columns);
@@ -63,7 +63,7 @@ Matrix Matrix::Product(Matrix const &matrix2) {
 }
 
 //Matrix multiplication
-Matrix Matrix::Multiply(Matrix const &matrix2) {
+Matrix Matrix::Dot(Matrix const &matrix2) {
 	assert(columns == matrix2.rows);
 
 	Matrix result(rows, matrix2.columns);
@@ -145,6 +145,13 @@ Matrix Matrix::Transpose() {
 	return result;
 }
 
+//Matrix application of a given function to every element
 Matrix Matrix::ApplyFunction(double (*function)(double)) const {
+	Matrix result(columns, rows);
 
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			result.matrix[i][j] = (*function)(matrix[i][j]);
+
+	return result;
 }
