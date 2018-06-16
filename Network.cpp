@@ -1,17 +1,16 @@
 #include "Network.h"
+
 #include "Matrix.h"
 #include <vector>
+#include <list>
 
 Network::Network(){}
 
 Network::~Network(){}
 
 //Trains the network for a given set of inputs
-void Network::Train(Matrix &inputs, Matrix &expected, int &trainingIterations) {
-	//rows = n, cols = 1
-	Inputs = inputs;
-
-	Weights1 = Matrix(HIDDEN_COUNT, Inputs.rows);
+void Network::Train(std::list<Matrix> &inputs, Matrix &expected, int &trainingIterations) {
+	Weights1 = Matrix(HIDDEN_COUNT, inputs.front().rows);
 	Bias1 = Matrix(HIDDEN_COUNT, 1);
 	Activation1 = Matrix(HIDDEN_COUNT, 1);
 	Hidden = Matrix(HIDDEN_COUNT, 1);
@@ -21,10 +20,24 @@ void Network::Train(Matrix &inputs, Matrix &expected, int &trainingIterations) {
 	Activation2 = Matrix(OUTPUT_COUNT, 1);
 	Outputs = Matrix(OUTPUT_COUNT, 1);
 
+	Initialization();
+
+	//per batch
 	for (int i = 0; i < trainingIterations; i++) {
-		Initialization();
-		Feedforward();
-		Backpropagation(expected);
+
+		//per input
+		for (std::list<Matrix>::const_iterator input = inputs.begin; input != inputs.end();  input++) {
+			Inputs = Matrix(input->rows, 1);
+
+			Feedforward();
+			Backpropagation(expected);
+		}
+		Weights1 = Weights1.Subtract(dWeights1.MultiplyScalar(LEARNING_RATE));
+		Bias1 = Bias1.Subtract(dBias1.MultiplyScalar(LEARNING_RATE));
+		Weights2 = Weights2.Subtract(dWeights2.MultiplyScalar(LEARNING_RATE));
+		Bias2 = Bias2.Subtract(dBias2.MultiplyScalar(LEARNING_RATE));
+	
+		//print global errors, output, and expected?
 	}
 
 	IsTrained = true;
@@ -34,6 +47,7 @@ void Network::Train(Matrix &inputs, Matrix &expected, int &trainingIterations) {
 void Network::Run(Matrix &inputs) {
 	if (IsTrained) {
 		Feedforward();
+		Outputs.PrintMatrix();
 	}
 }
 
@@ -51,32 +65,12 @@ void Network::Feedforward() {
 }
 
 void Network::Backpropagation(Matrix &expected) {
-
-	//Matrix z4 = Hidden2.Dot(Weights3).Add(Bias3).ApplyFunction(HyperbolicDerivative);
-	//dBias3 = Outputs.Subtract(expected).Multiply(z4);
-
-	//Matrix z3 = Feedforward(Hidden, Weights2, Bias2).ApplyFunction(HyperbolicDerivative);
 	dBias2 = Outputs.Subtract(expected).Multiply(Activation2.ApplyFunction(HyperbolicDerivative));
 	dWeights2 = dWeights2.Add(Hidden.Transpose().Dot(dBias2));
 
-	//Matrix z2 = Feedforward(Inputs, Weights1, Bias1).ApplyFunction(HyperbolicDerivative);
 	dBias1 = dBias2.Dot(Weights2.Transpose().Multiply(Activation1.ApplyFunction(HyperbolicDerivative)));
 	dWeights1 = dWeights1.Add(Inputs.Transpose().Dot(dBias1));
-
-	Weights1 = Weights1.Subtract(dBias1.MultiplyScalar(LEARNING_RATE));
-	Weights2 = Weights2.Subtract(dBias2.MultiplyScalar(LEARNING_RATE));
-
-	//Weights2 = CalculateError(Weights2, Outputs);
-	//Weights1 = CalculateError(Weights1, Hidden);
-
-	//double mse = MSE(ideal, Outputs);
 }
-
-/*
-double Network::MSE(Matrix &ideal, Matrix &actual) {
-	return ideal.Subtract(actual).Power(2).Sum() / ideal.rows;
-}
-*/
 
 #pragma region FUNCTIONS
 

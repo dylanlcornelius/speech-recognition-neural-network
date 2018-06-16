@@ -1,6 +1,7 @@
 #include "Matrix.h"
 
 #include <assert.h>
+#include <iostream>
 
 Matrix::Matrix(){}
 
@@ -10,6 +11,7 @@ Matrix::~Matrix(){}
 Matrix::Matrix(int rows, int columns) {
 	this->rows = rows;
 	this->columns = columns;
+	this->matrix = std::vector<std::vector<double> >(rows, std::vector<double>(columns, 0.0));
 }
 
 //Initialize Matrix
@@ -154,4 +156,13 @@ Matrix Matrix::ApplyFunction(double (*function)(double)) const {
 			result.matrix[i][j] = (*function)(matrix[i][j]);
 
 	return result;
+}
+
+void Matrix::PrintMatrix() {
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < columns; j++)
+			std::cout << matrix[i][j];
+		std::cout << std::endl;
+	}
+			
 }

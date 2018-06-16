@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Matrix.h"
+#include <list>
 
 class Network
 {
 public:
 	Network();
 
-	void Train(Matrix &inputs, Matrix &expected, int &trainingIterations);
+	void Train(std::list<Matrix> &inputs, Matrix &expected, int &trainingIterations);
 	void Run(Matrix &inputs);
 
 	~Network();
@@ -22,6 +23,7 @@ private:
 	Matrix Weights1;
 	Matrix Bias1;
 	Matrix Activation1;
+	Matrix Updates1;
 	Matrix Hidden;
 
 	Matrix Weights2;
@@ -29,10 +31,11 @@ private:
 	Matrix Activation2;
 	Matrix Outputs;
 
-	Matrix dBias2;
-	Matrix dBias1;
-	Matrix dWeights2;
 	Matrix dWeights1;
+	Matrix dWeights2;
+	Matrix dBias1;
+	Matrix dBias2;
+
 
 	//Temporary assertion while weights are not stored.
 	bool IsTrained;

@@ -23,6 +23,7 @@ public:
 	//Matrix Divide(int const divisor);
 	Matrix Transpose();
 	Matrix ApplyFunction(double(*function)(double)) const;
+	void PrintMatrix();
 
 	~Matrix();
 
