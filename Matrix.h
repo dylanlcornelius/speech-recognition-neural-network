@@ -11,12 +11,12 @@ public:
 
 	int rows;
 	int columns;
+	std::vector<std::vector<double> > matrix;
 
 	Matrix Add(Matrix const &matrix2);
 	Matrix Subtract(Matrix const &matrix2);
 	Matrix Multiply(Matrix const &matrix2);
 	Matrix Dot(Matrix const &matrix2);
-	int DotProduct(Matrix const &matrix2, int &m1Row, int &m2Col);
 	Matrix MultiplyScalar(double const &scalar);
 	Matrix Power(int const exponent);
 	double Sum();
@@ -28,6 +28,6 @@ public:
 	~Matrix();
 
 private:
-	std::vector<std::vector<double> > matrix;
+	int DotProduct(Matrix const &matrix2, int &m1Row, int &m2Col);
 };
 

@@ -43,6 +43,7 @@ private:
 	void Initialization();
 	void Feedforward();
 	void Backpropagation(Matrix &expected);
-	//double MSE(Matrix &weights, Matrix &outputs);
+	double MSE(Matrix &expected);
+	void PrintResults(Matrix &expected);
 };
 

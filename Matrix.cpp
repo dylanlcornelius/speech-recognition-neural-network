@@ -162,7 +162,7 @@ void Matrix::PrintMatrix() {
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++)
 			std::cout << matrix[i][j];
-		std::cout << std::endl;
+		//std::cout << std::endl;
 	}
 			
 }
