@@ -147,17 +147,6 @@ Matrix Matrix::Transpose() {
 	return result;
 }
 
-//Matrix application of a given function to every element
-Matrix Matrix::ApplyFunction(double (*function)(double)) const {
-	Matrix result(columns, rows);
-
-	for (int i = 0; i < rows; i++)
-		for (int j = 0; j < columns; j++)
-			result.matrix[i][j] = (*function)(matrix[i][j]);
-
-	return result;
-}
-
 void Matrix::PrintMatrix() {
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++)
@@ -166,3 +155,91 @@ void Matrix::PrintMatrix() {
 	}
 			
 }
+
+#pragma region FUNCTIONS
+
+//Matrix application of a given function to every element
+Matrix Matrix::ApplyRandomize() {
+	Matrix result(columns, rows);
+
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			result.matrix[i][j] = Randomize(matrix[i][j]);
+
+	return result;
+}
+
+//Randomize initial weights
+double Matrix::Randomize(double x) {
+	double r = (double)(rand() % 10000 + 1) / 10000 - 0.5;
+	if (rand() % 2 == 0)
+		r = -r;
+	return r;
+}
+
+//Matrix application of a given function to every element
+Matrix Matrix::ApplyHyperbolic() {
+	Matrix result(columns, rows);
+
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			result.matrix[i][j] = HyperbolicTangent(matrix[i][j]);
+
+	return result;
+}
+
+//Hyperbolic Tangent Function
+double Matrix::HyperbolicTangent(double x) {
+	return (exp(2 * x) - 1) / (exp(2 * x) + 1);
+}
+
+//Matrix application of a given function to every element
+Matrix Matrix::ApplyHyperbolicP() {
+	Matrix result(columns, rows);
+
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			result.matrix[i][j] = HyperbolicDerivative(matrix[i][j]);
+
+	return result;
+}
+
+//Hyperbolic Tangent Function Derivative
+double Matrix::HyperbolicDerivative(double x) {
+	return (1 - pow(HyperbolicTangent(x), 2));
+}
+
+//Matrix application of a given function to every element
+Matrix Matrix::ApplySigmoid() {
+	Matrix result(columns, rows);
+
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			result.matrix[i][j] = Sigmoid(matrix[i][j]);
+
+	return result;
+}
+
+//Sigmoid Function
+double Matrix::Sigmoid(double x) {
+	return 1 / (1 + exp(-x));
+}
+
+//Matrix application of a given function to every element
+Matrix Matrix::ApplySigmoidP() {
+	Matrix result(columns, rows);
+
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			result.matrix[i][j] = SigmoidDerivative(matrix[i][j]);
+
+	return result;
+}
+
+//Sigmoid Derivative Function
+//replace with Sigmoid(x)(1 - Sigmoid(x)) ?
+double Matrix::SigmoidDerivative(double x) {
+	return (exp(-x) / pow((1 + exp(-x)), 2));
+}
+
+#pragma endregion

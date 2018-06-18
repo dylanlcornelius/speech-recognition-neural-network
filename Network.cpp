@@ -27,7 +27,7 @@ void Network::Train(std::list<Matrix> &inputs, Matrix &expected, int &trainingIt
 	//per batch
 	for (int i = 0; i < trainingIterations; i++) {
 		//per input
-		for (std::list<Matrix>::const_iterator input = inputs.begin; input != inputs.end();  input++) {
+		for (std::list<Matrix>::const_iterator input = inputs.begin(); input != inputs.end();  input++) {
 			Inputs = Matrix(input->matrix);
 
 			Feedforward();
@@ -54,30 +54,30 @@ void Network::Run(Matrix &inputs) {
 
 //Randomize the starting weights of the network
 void Network::Initialization() {
-	Weights1 = Weights1.ApplyFunction(Randomize);
-	Weights2 = Weights2.ApplyFunction(Randomize);
+	Weights1 = Weights1.ApplyRandomize();
+	Weights2 = Weights2.ApplyRandomize();
 }
 
 //Calculate the outputs of the network for the given inputs
 void Network::Feedforward() {
 	Activation1 = Inputs.Dot(Weights1).Add(Bias1);
-	Hidden = Activation1.ApplyFunction(Sigmoid);
+	Hidden = Activation1.ApplySigmoid();
 
 	Activation2 = Hidden.Dot(Weights2).Add(Bias2);
-	Outputs = Activation2.ApplyFunction(Sigmoid);
+	Outputs = Activation2.ApplySigmoid();
 }
 
 //Calculate the gradient descents for the network weights.
 void Network::Backpropagation(Matrix &expected) {
-	dBias2 = Outputs.Subtract(expected).Multiply(Activation2.ApplyFunction(SigmoidDerivative));
+	dBias2 = Outputs.Subtract(expected).Multiply(Activation2.ApplySigmoidP());
 	dWeights2 = dWeights2.Add(Hidden.Transpose().Dot(dBias2));
 
-	dBias1 = dBias2.Dot(Weights2.Transpose().Multiply(Activation1.ApplyFunction(SigmoidDerivative)));
+	dBias1 = dBias2.Dot(Weights2.Transpose().Multiply(Activation1.ApplySigmoidP()));
 	dWeights1 = dWeights1.Add(Inputs.Transpose().Dot(dBias1));
 }
 
 double Network::MSE(Matrix & expected) {
-	return expected.Subtract(Outputs).Sum / expected.columns;
+	return expected.Subtract(Outputs).Sum() / expected.columns;
 }
 
 void Network::PrintResults(Matrix &expected) {
@@ -90,36 +90,3 @@ void Network::PrintResults(Matrix &expected) {
 	expected.PrintMatrix();
 	std::cout << std::endl;
 }
-
-#pragma region FUNCTIONS
-
-//Randomize initial weights
-double Randomize(double x) {
-	double r = (double)(rand() % 10000 + 1) / 10000 - 0.5;
-	if (rand() % 2 == 0)
-		r = -r;
-	return r;
-}
-
-//Hyperbolic Tangent Function
-double HyperbolicTangent(double x) {
-	return (exp(2 * x) - 1) / (exp(2 * x) + 1);
-}
-
-//Hyperbolic Tangent Function Derivative
-double HyperbolicDerivative(double x) {
-	return (1 - pow(HyperbolicTangent(x), 2));
-}
-
-//Sigmoid Function
-double Sigmoid(double x) {
-	return 1 / (1 + exp(-x));
-}
-
-//Sigmoid Derivative Function
-//replace with Sigmoid(x)(1 - Sigmoid(x)) ?
-double SigmoidDerivative(double x) {
-	return (exp(-x) / pow((1 + exp(-x)), 2));
-}
-
-#pragma endregion

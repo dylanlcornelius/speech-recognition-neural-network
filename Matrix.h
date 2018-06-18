@@ -22,8 +22,18 @@ public:
 	double Sum();
 	//Matrix Divide(int const divisor);
 	Matrix Transpose();
-	Matrix ApplyFunction(double(*function)(double)) const;
 	void PrintMatrix();
+
+	Matrix ApplyRandomize();
+	double Randomize(double x);
+	Matrix ApplyHyperbolic();
+	double HyperbolicTangent(double x);
+	Matrix ApplyHyperbolicP();
+	double HyperbolicDerivative(double x);
+	Matrix ApplySigmoid();
+	double Sigmoid(double x);
+	Matrix ApplySigmoidP();
+	double SigmoidDerivative(double x);
 
 	~Matrix();
 
