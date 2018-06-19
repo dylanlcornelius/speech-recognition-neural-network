@@ -39,7 +39,7 @@ Matrix Matrix::Add(Matrix const &matrix2) {
 }
 
 //Matrix subtraction
-Matrix Matrix::Subtract(Matrix const &matrix2) {
+Matrix Matrix::Subtract(Matrix &matrix2) {
 	assert(rows == matrix2.rows && columns == matrix2.columns);
 
 	Matrix result(rows, columns);
@@ -78,11 +78,10 @@ Matrix Matrix::Dot(Matrix const &matrix2) {
 }
 
 //Vector dot product
-int Matrix::DotProduct(Matrix const &matrix2, int &m1Row, int &m2Col) {
+double Matrix::DotProduct(Matrix const &matrix2, int &m1Row, int &m2Col) {
+	double result = 0;
 
-	int result;
-
-	for (int i = 0; i < rows; i++)
+	for (int i = 0; i < columns; i++)
 		result += matrix[m1Row][i] * matrix2.matrix[i][m2Col];
 
 	return result;
@@ -150,21 +149,29 @@ Matrix Matrix::Transpose() {
 void Matrix::PrintMatrix() {
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++)
-			std::cout << matrix[i][j];
+			std::cout << matrix[i][j] << " ";
 		//std::cout << std::endl;
 	}
-			
 }
 
 #pragma region FUNCTIONS
 
 //Matrix application of a given function to every element
 Matrix Matrix::ApplyRandomize() {
-	Matrix result(columns, rows);
 
-	for (int i = 0; i < rows; i++)
-		for (int j = 0; j < columns; j++)
+	//PrintMatrix();
+
+	//std::cout << rows << columns << std::endl;
+
+	Matrix result(rows, columns);
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < columns; j++) {
+			//std::cout << "i: " << i << ", j: " << j << std::endl;
 			result.matrix[i][j] = Randomize(matrix[i][j]);
+		}
+		//std::cout << std::endl;
+	}
 
 	return result;
 }
@@ -179,7 +186,7 @@ double Matrix::Randomize(double x) {
 
 //Matrix application of a given function to every element
 Matrix Matrix::ApplyHyperbolic() {
-	Matrix result(columns, rows);
+	Matrix result(rows, columns);
 
 	for (int i = 0; i < rows; i++)
 		for (int j = 0; j < columns; j++)
@@ -195,7 +202,7 @@ double Matrix::HyperbolicTangent(double x) {
 
 //Matrix application of a given function to every element
 Matrix Matrix::ApplyHyperbolicP() {
-	Matrix result(columns, rows);
+	Matrix result(rows, columns);
 
 	for (int i = 0; i < rows; i++)
 		for (int j = 0; j < columns; j++)
@@ -211,7 +218,7 @@ double Matrix::HyperbolicDerivative(double x) {
 
 //Matrix application of a given function to every element
 Matrix Matrix::ApplySigmoid() {
-	Matrix result(columns, rows);
+	Matrix result(rows, columns);
 
 	for (int i = 0; i < rows; i++)
 		for (int j = 0; j < columns; j++)
@@ -222,12 +229,13 @@ Matrix Matrix::ApplySigmoid() {
 
 //Sigmoid Function
 double Matrix::Sigmoid(double x) {
+	//std::cout << 1 / (1 + exp(-x)) << std::endl;
 	return 1 / (1 + exp(-x));
 }
 
 //Matrix application of a given function to every element
 Matrix Matrix::ApplySigmoidP() {
-	Matrix result(columns, rows);
+	Matrix result(rows, columns);
 
 	for (int i = 0; i < rows; i++)
 		for (int j = 0; j < columns; j++)

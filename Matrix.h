@@ -14,7 +14,7 @@ public:
 	std::vector<std::vector<double> > matrix;
 
 	Matrix Add(Matrix const &matrix2);
-	Matrix Subtract(Matrix const &matrix2);
+	Matrix Subtract(Matrix &matrix2);
 	Matrix Multiply(Matrix const &matrix2);
 	Matrix Dot(Matrix const &matrix2);
 	Matrix MultiplyScalar(double const &scalar);
@@ -38,6 +38,6 @@ public:
 	~Matrix();
 
 private:
-	int DotProduct(Matrix const &matrix2, int &m1Row, int &m2Col);
+	double DotProduct(Matrix const &matrix2, int &m1Row, int &m2Col);
 };
 

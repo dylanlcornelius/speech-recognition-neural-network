@@ -8,7 +8,7 @@ class Network
 public:
 	Network();
 
-	void Train(std::list<Matrix> &inputs, Matrix &expected, int &trainingIterations);
+	void Train(std::list<Matrix> &inputs, std::list<Matrix> &expected, int &trainingIterations);
 	void Run(Matrix &inputs);
 
 	~Network();
@@ -16,7 +16,7 @@ public:
 private:
 	int const HIDDEN_COUNT = 2;
 	int const OUTPUT_COUNT = 1;
-	double const LEARNING_RATE = -0.1;
+	double const LEARNING_RATE = .1;
 
 	Matrix Inputs;
 
@@ -44,6 +44,7 @@ private:
 	void Feedforward();
 	void Backpropagation(Matrix &expected);
 	double MSE(Matrix &expected);
-	void PrintResults(Matrix &expected);
+	void PrintResults(Matrix &expected, int &i);
+	void PrintBatch(int &i, double &mse);
 };
 

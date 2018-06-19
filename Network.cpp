@@ -10,15 +10,22 @@ Network::Network(){}
 Network::~Network(){}
 
 //Trains the network for a given set of inputs
-void Network::Train(std::list<Matrix> &inputs, Matrix &expected, int &trainingIterations) {
+void Network::Train(std::list<Matrix> &inputs, std::list<Matrix> &expected, int &trainingIterations) {
 	//rows = different inputs, cols = 1 input
-	Weights1 =		Matrix(inputs.front().rows, HIDDEN_COUNT);
-	Bias1 =			Matrix(1, HIDDEN_COUNT);
+	Weights1 =		Matrix(inputs.front().columns, HIDDEN_COUNT);
+	dWeights1 =		Matrix(inputs.front().columns, HIDDEN_COUNT);
+	//std::cout << inputs.front().columns << ", ::" << HIDDEN_COUNT << std::endl;
+	//Bias1 =			Matrix(1, HIDDEN_COUNT);
+	Bias1 = Matrix(std::vector<std::vector<double> >(1, std::vector<double>(HIDDEN_COUNT, 1.0)));
+	dBias1 =		Matrix(1, HIDDEN_COUNT);
 	Activation1 =	Matrix(1, HIDDEN_COUNT);
 	Hidden =		Matrix(1, HIDDEN_COUNT);
 
-	Weights1 =		Matrix(HIDDEN_COUNT, OUTPUT_COUNT);
-	Bias2 =			Matrix(1, OUTPUT_COUNT);
+	Weights2 =		Matrix(HIDDEN_COUNT, OUTPUT_COUNT);
+	dWeights2 =		Matrix(HIDDEN_COUNT, OUTPUT_COUNT);
+	//Bias2 =			Matrix(1, OUTPUT_COUNT);
+	Bias2 = Matrix(std::vector<std::vector<double> >(1, std::vector<double>(OUTPUT_COUNT, 1.0)));
+	dBias2 =		Matrix(1, OUTPUT_COUNT);
 	Activation2 =	Matrix(1, OUTPUT_COUNT);
 	Outputs =		Matrix(1, OUTPUT_COUNT);
 
@@ -27,18 +34,31 @@ void Network::Train(std::list<Matrix> &inputs, Matrix &expected, int &trainingIt
 	//per batch
 	for (int i = 0; i < trainingIterations; i++) {
 		//per input
-		for (std::list<Matrix>::const_iterator input = inputs.begin(); input != inputs.end();  input++) {
-			Inputs = Matrix(input->matrix);
+		double mse = 0;
+		auto inputsA = inputs.begin();
+		auto expectedA = expected.begin();
+		while (inputsA != inputs.end()) {
+			Inputs = Matrix(inputsA->matrix);
+			Matrix Expected = Matrix(expectedA->matrix);
 
 			Feedforward();
-			Backpropagation(expected);
+			Backpropagation(Expected);
 
-			PrintResults(expected);
+			//PrintResults(Expected, i);
+
+			mse += MSE(Expected) * MSE(Expected);
+
+			++inputsA;
+			++expectedA;
 		}
 		Weights1 = Weights1.Subtract(dWeights1.MultiplyScalar(LEARNING_RATE));
-		Bias1 = Bias1.Subtract(dBias1.MultiplyScalar(LEARNING_RATE));
+		//Bias1 = Bias1.Subtract(dBias1.MultiplyScalar(LEARNING_RATE));
 		Weights2 = Weights2.Subtract(dWeights2.MultiplyScalar(LEARNING_RATE));
-		Bias2 = Bias2.Subtract(dBias2.MultiplyScalar(LEARNING_RATE));
+		//Bias2 = Bias2.Subtract(dBias2.MultiplyScalar(LEARNING_RATE));
+
+		mse = mse / 4 * 100;
+
+		PrintBatch(i, mse);
 	}
 
 	IsTrained = true;
@@ -76,11 +96,13 @@ void Network::Backpropagation(Matrix &expected) {
 	dWeights1 = dWeights1.Add(Inputs.Transpose().Dot(dBias1));
 }
 
-double Network::MSE(Matrix & expected) {
-	return expected.Subtract(Outputs).Sum() / expected.columns;
+double Network::MSE(Matrix &expected) {
+	return expected.Subtract(Outputs).Sum();
+	//return Outputs.Subtract(expected).Sum();
 }
 
-void Network::PrintResults(Matrix &expected) {
+void Network::PrintResults(Matrix &expected, int &i) {
+	std::cout << "Iteration: " << i+1 << " ";
 	std::cout << "Error: " << MSE(expected) << std::endl;
 	std::cout << "Input: ";
 	Inputs.PrintMatrix();
@@ -89,4 +111,9 @@ void Network::PrintResults(Matrix &expected) {
 	std::cout << ", Expected: ";
 	expected.PrintMatrix();
 	std::cout << std::endl;
+}
+
+void Network::PrintBatch(int &i, double &mse) {
+	std::cout << "Iteration: " << i + 1 << " ";
+	std::cout << "Error: " << mse << std::endl;
 }
