@@ -13,12 +13,12 @@ public:
 	int columns;
 	std::vector<std::vector<double> > matrix;
 
-	Matrix Add(Matrix const &matrix2);
-	Matrix Subtract(Matrix &matrix2);
-	Matrix Multiply(Matrix const &matrix2);
+	Matrix operator+(Matrix const &matrix2);
+	Matrix operator-(Matrix &matrix2);
+	Matrix operator*(Matrix const &matrix2);
 	Matrix Dot(Matrix const &matrix2);
 	Matrix MultiplyScalar(double const &scalar);
-	Matrix Power(int const exponent);
+	Matrix operator^(int const exponent);
 	double Sum();
 	//Matrix Divide(int const divisor);
 	Matrix Transpose();

@@ -25,7 +25,7 @@ Matrix::Matrix(std::vector<std::vector<double> > const &matrix) {
 }
 
 //Matrix addition
-Matrix Matrix::Add(Matrix const &matrix2) {
+Matrix Matrix::operator+(Matrix const &matrix2) {
 	//checking for valid inputs
 	assert(rows == matrix2.rows && columns == matrix2.columns);
 
@@ -39,7 +39,7 @@ Matrix Matrix::Add(Matrix const &matrix2) {
 }
 
 //Matrix subtraction
-Matrix Matrix::Subtract(Matrix &matrix2) {
+Matrix Matrix::operator-(Matrix &matrix2) {
 	assert(rows == matrix2.rows && columns == matrix2.columns);
 
 	Matrix result(rows, columns);
@@ -52,7 +52,7 @@ Matrix Matrix::Subtract(Matrix &matrix2) {
 }
 
 //Matrix Hadamard multiplication
-Matrix Matrix::Multiply(Matrix const &matrix2) {
+Matrix Matrix::operator*(Matrix const &matrix2) {
 	assert(rows == matrix2.rows && columns == matrix2.columns);
 
 	Matrix result(rows, columns);
@@ -101,7 +101,7 @@ Matrix Matrix::MultiplyScalar(double const &scalar)
 }
 
 //Matrix exponential function
-Matrix Matrix::Power(int const exponent) {
+Matrix Matrix::operator^(int const exponent) {
 	Matrix result(rows, columns);
 
 	for (int i = 0; i < rows; i++)

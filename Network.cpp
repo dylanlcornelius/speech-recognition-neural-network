@@ -51,10 +51,10 @@ void Network::Train(std::list<Matrix> &inputs, std::list<Matrix> &expected, int 
 			++inputsA;
 			++expectedA;
 		}
-		Weights1 = Weights1.Subtract(dWeights1.MultiplyScalar(LEARNING_RATE));
-		//Bias1 = Bias1.Subtract(dBias1.MultiplyScalar(LEARNING_RATE));
-		Weights2 = Weights2.Subtract(dWeights2.MultiplyScalar(LEARNING_RATE));
-		//Bias2 = Bias2.Subtract(dBias2.MultiplyScalar(LEARNING_RATE));
+		Weights1 = Weights1 - (dWeights1.MultiplyScalar(LEARNING_RATE));
+		Bias1 = Bias1 - (dBias1.MultiplyScalar(LEARNING_RATE));
+		Weights2 = Weights2 - (dWeights2.MultiplyScalar(LEARNING_RATE));
+		Bias2 = Bias2 - (dBias2.MultiplyScalar(LEARNING_RATE));
 
 		mse = mse / 4 * 100;
 
@@ -80,24 +80,24 @@ void Network::Initialization() {
 
 //Calculate the outputs of the network for the given inputs
 void Network::Feedforward() {
-	Activation1 = Inputs.Dot(Weights1).Add(Bias1);
+	Activation1 = Inputs.Dot(Weights1) + Bias1;
 	Hidden = Activation1.ApplySigmoid();
 
-	Activation2 = Hidden.Dot(Weights2).Add(Bias2);
+	Activation2 = Hidden.Dot(Weights2) + Bias2;
 	Outputs = Activation2.ApplySigmoid();
 }
 
 //Calculate the gradient descents for the network weights.
 void Network::Backpropagation(Matrix &expected) {
-	dBias2 = Outputs.Subtract(expected).Multiply(Activation2.ApplySigmoidP());
-	dWeights2 = dWeights2.Add(Hidden.Transpose().Dot(dBias2));
+	dBias2 = Outputs - expected * Activation2.ApplySigmoidP();
+	dWeights2 = dWeights2 + (Hidden.Transpose().Dot(dBias2));
 
-	dBias1 = dBias2.Dot(Weights2.Transpose().Multiply(Activation1.ApplySigmoidP()));
-	dWeights1 = dWeights1.Add(Inputs.Transpose().Dot(dBias1));
+	dBias1 = dBias2.Dot(Weights2.Transpose() * Activation1.ApplySigmoidP());
+	dWeights1 = dWeights1 + (Inputs.Transpose().Dot(dBias1));
 }
 
 double Network::MSE(Matrix &expected) {
-	return expected.Subtract(Outputs).Sum();
+	return (expected - Outputs).Sum();
 	//return Outputs.Subtract(expected).Sum();
 }
 
