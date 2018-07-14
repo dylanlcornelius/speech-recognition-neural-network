@@ -59,6 +59,9 @@ void Network::Train(std::list<Matrix> &inputs, std::list<Matrix> &expected, int 
 		mse = mse / 4 * 100;
 
 		PrintBatch(i, mse);
+
+		if (mse < 0.0001)
+			break;
 	}
 
 	IsTrained = true;
@@ -66,9 +69,11 @@ void Network::Train(std::list<Matrix> &inputs, std::list<Matrix> &expected, int 
 
 //Runs the network with a given set of inputs
 void Network::Run(Matrix &inputs) {
+	Inputs = inputs;
+
 	if (IsTrained) {
 		Feedforward();
-		Outputs.PrintMatrix();
+		Outputs.Step().PrintMatrix();
 	}
 }
 
@@ -89,7 +94,7 @@ void Network::Feedforward() {
 
 //Calculate the gradient descents for the network weights.
 void Network::Backpropagation(Matrix &expected) {
-	dBias2 = Outputs - expected * Activation2.ApplySigmoidP();
+	dBias2 = (Outputs - expected) * Activation2.ApplySigmoidP();
 	dWeights2 = dWeights2 + (Hidden.Transpose().Dot(dBias2));
 
 	dBias1 = dBias2.Dot(Weights2.Transpose() * Activation1.ApplySigmoidP());
@@ -98,7 +103,6 @@ void Network::Backpropagation(Matrix &expected) {
 
 double Network::MSE(Matrix &expected) {
 	return (expected - Outputs).Sum();
-	//return Outputs.Subtract(expected).Sum();
 }
 
 void Network::PrintResults(Matrix &expected, int &i) {

@@ -38,7 +38,7 @@ int main(int argc, char *argb[]) {
 	
 	//e.PrintMatrix();
 
-	int ti = 3000;
+	int ti = 2000;
 
 	Network xor;
 
@@ -54,30 +54,30 @@ int main(int argc, char *argb[]) {
 	xor.Run(r1);
 	std::cout << std::endl;
 
-	r1 = { std::vector<std::vector<double> >(1, std::vector<double>({ 1, 0 })) };
+	Matrix r2 = { std::vector<std::vector<double> >(1, std::vector<double>({ 1, 0 })) };
 
 	std::cout << "test: ";
-	r1.PrintMatrix();
+	r2.PrintMatrix();
 
 	std::cout << "result: ";
-	xor.Run(r1);
+	xor.Run(r2);
 	std::cout << std::endl;
 
-	r1 = { std::vector<std::vector<double> >(1, std::vector<double>({ 0, 1 })) };
+	Matrix r3 = { std::vector<std::vector<double> >(1, std::vector<double>({ 0, 1 })) };
 
 	std::cout << "test: ";
-	r1.PrintMatrix();
+	r3.PrintMatrix();
 
 	std::cout << "result: ";
-	xor.Run(r1);
+	xor.Run(r3);
 	std::cout << std::endl;
 
-	r1 = { std::vector<std::vector<double> >(1, std::vector<double>({ 0, 0 })) };
+	Matrix r4 = { std::vector<std::vector<double> >(1, std::vector<double>({ 0, 0 })) };
 
 	std::cout << "test: ";
-	r1.PrintMatrix();
+	r4.PrintMatrix();
 
 	std::cout << "result: ";
-	xor.Run(r1);
+	xor.Run(r4);
 	std::cout << std::endl;
 }

@@ -22,6 +22,7 @@ public:
 	double Sum();
 	//Matrix Divide(int const divisor);
 	Matrix Transpose();
+	Matrix Step();
 	void PrintMatrix();
 
 	Matrix ApplyRandomize();

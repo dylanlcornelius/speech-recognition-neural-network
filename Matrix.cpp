@@ -146,6 +146,22 @@ Matrix Matrix::Transpose() {
 	return result;
 }
 
+//
+Matrix Matrix::Step() {
+	Matrix result(columns, rows);
+
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++) {
+			if (matrix[i][j] < 0.01)
+				result.matrix[i][j] = 0;
+			else if (matrix[i][j] > 0.99)
+				result.matrix[i][j] = 1;
+		}
+		
+	return result;
+}
+
+//
 void Matrix::PrintMatrix() {
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++)

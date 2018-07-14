@@ -14,9 +14,9 @@ public:
 	~Network();
 
 private:
-	int const HIDDEN_COUNT = 2;
+	int const HIDDEN_COUNT = 16;
 	int const OUTPUT_COUNT = 1;
-	double const LEARNING_RATE = .1;
+	double const LEARNING_RATE = 1;
 
 	Matrix Inputs;
 
