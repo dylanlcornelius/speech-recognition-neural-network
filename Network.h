@@ -8,15 +8,13 @@ class Network
 public:
 	Network();
 
-	void Train(std::list<Matrix> &inputs, std::list<Matrix> &expected, int &trainingIterations);
+	void Train(std::list<Matrix> &inputs, std::list<Matrix> &expected, int &hiddenCount, int &trainingIterations, double &learningRate);
 	void Run(Matrix &inputs);
 
 	~Network();
 
 private:
-	int const HIDDEN_COUNT = 16;
 	int const OUTPUT_COUNT = 1;
-	double const LEARNING_RATE = 1;
 
 	Matrix Inputs;
 
@@ -46,5 +44,6 @@ private:
 	double MSE(Matrix &expected);
 	void PrintResults(Matrix &expected, int &i);
 	void PrintBatch(int &i, double &mse);
+	void PrintTest(Matrix &inputs);
 };
 
