@@ -41,6 +41,7 @@ private:
 	void Initialization();
 	void Feedforward();
 	void Backpropagation(Matrix &expected);
+	void SGD(double &learningRate);
 	double MSE(Matrix &expected);
 	void PrintResults(Matrix &expected, int &i);
 	void PrintBatch(int &i, double &mse);

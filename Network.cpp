@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <iostream>
+#include <ctime>
 
 Network::Network(){}
 
@@ -46,12 +47,10 @@ void Network::Train(std::list<Matrix> &inputs, std::list<Matrix> &expected, int 
 			++inputsA;
 			++expectedA;
 		}
-		Weights1 = Weights1 - (dWeights1.MultiplyScalar(learningRate));
-		Bias1 = Bias1 - (dBias1.MultiplyScalar(learningRate));
-		Weights2 = Weights2 - (dWeights2.MultiplyScalar(learningRate));
-		Bias2 = Bias2 - (dBias2.MultiplyScalar(learningRate));
 
-		mse = mse / 4 * 100;
+		SGD(learningRate);
+
+		mse = mse / expected.size() * 100;
 
 		PrintBatch(i, mse);
 
@@ -74,6 +73,7 @@ void Network::Run(Matrix &inputs) {
 
 //Randomize the starting weights of the network
 void Network::Initialization() {
+	std::srand(time(NULL));
 	Weights1 = Weights1.ApplyRandomize();
 	Weights2 = Weights2.ApplyRandomize();
 }
@@ -96,9 +96,19 @@ void Network::Backpropagation(Matrix &expected) {
 	dWeights1 = dWeights1 + (Inputs.Transpose().Dot(dBias1));
 }
 
+//Update weights with calculated gradient descents
+void Network::SGD(double &learningRate) {
+	Weights1 = Weights1 - (dWeights1.MultiplyScalar(learningRate));
+	Bias1 = Bias1 - (dBias1.MultiplyScalar(learningRate));
+	Weights2 = Weights2 - (dWeights2.MultiplyScalar(learningRate));
+	Bias2 = Bias2 - (dBias2.MultiplyScalar(learningRate));
+}
+
 double Network::MSE(Matrix &expected) {
 	return (expected - Outputs).Sum();
 }
+
+#pragma region PRINTING FUNCTIONS
 
 void Network::PrintResults(Matrix &expected, int &i) {
 	std::cout << "Iteration: " << i+1 << " ";
@@ -124,3 +134,5 @@ void Network::PrintTest(Matrix &inputs) {
 	Outputs.Step().PrintMatrix();
 	std::cout << std::endl;
 }
+
+#pragma endregion 

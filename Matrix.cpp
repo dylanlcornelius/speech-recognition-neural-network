@@ -123,18 +123,6 @@ double Matrix::Sum() {
 	return sum;
 }
 
-/*
-Matrix Matrix::Divide(int const divisor) {
-	Matrix result(rows, columns);
-
-	for (int i = 0; i < rows; i++)
-		for (int j = 0; j < columns; j++)
-			result.matrix[i][j] = matrix[i][j] / divisor;
-
-	return result;
-}
-*/
-
 //Matrix transposition
 Matrix Matrix::Transpose() {
 	Matrix result(columns, rows);
@@ -161,12 +149,10 @@ Matrix Matrix::Step() {
 	return result;
 }
 
-//
 void Matrix::PrintMatrix() {
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++)
 			std::cout << matrix[i][j] << " ";
-		//std::cout << std::endl;
 	}
 }
 

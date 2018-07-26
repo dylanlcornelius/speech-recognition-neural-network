@@ -20,25 +20,25 @@ public:
 	Matrix MultiplyScalar(double const &scalar);
 	Matrix operator^(int const exponent);
 	double Sum();
-	//Matrix Divide(int const divisor);
 	Matrix Transpose();
 	Matrix Step();
 	void PrintMatrix();
 
 	Matrix ApplyRandomize();
-	double Randomize(double x);
 	Matrix ApplyHyperbolic();
-	double HyperbolicTangent(double x);
 	Matrix ApplyHyperbolicP();
-	double HyperbolicDerivative(double x);
 	Matrix ApplySigmoid();
-	double Sigmoid(double x);
 	Matrix ApplySigmoidP();
-	double SigmoidDerivative(double x);
 
 	~Matrix();
 
 private:
 	double DotProduct(Matrix const &matrix2, int &m1Row, int &m2Col);
+
+	double Randomize(double x);
+	double HyperbolicTangent(double x);
+	double HyperbolicDerivative(double x);
+	double Sigmoid(double x);
+	double SigmoidDerivative(double x);
 };
 
