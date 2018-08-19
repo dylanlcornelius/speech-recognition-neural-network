@@ -1,12 +1,8 @@
 ﻿using NAudio.Wave;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpeechRecognitionNN
@@ -14,8 +10,10 @@ namespace SpeechRecognitionNN
     public partial class MainForm : Form
     {
         const int SIZE_X = 4000;
-        const int SIZE_Y = 10000;
+        const int SIZE_Y = 40000;
         const int tick = 10;
+
+        const int epochs = 500;
 
         bool isRunning;
 
@@ -30,6 +28,8 @@ namespace SpeechRecognitionNN
 
             chartAudio.ChartAreas[0].AxisY.Minimum = -SIZE_Y;
             chartAudio.ChartAreas[0].AxisY.Maximum = SIZE_Y;
+
+            pbrEpochs.Maximum = epochs;
 
             input = new WaveIn();
             input.WaveFormat = new WaveFormat(44100, 1);
@@ -54,6 +54,17 @@ namespace SpeechRecognitionNN
         private void timer1_Tick(object sender, EventArgs e)
         {
             chartAudio.Series["Input"].Points.DataBindY(queue);
+        }
+
+        private void btnTrain_Click(object sender, EventArgs e)
+        {
+            pbrEpochs.Increment(-epochs);
+            for (int i = 0; i < epochs; i++)
+            {
+                pbrEpochs.PerformStep();
+            }
+            rtbConsole.AppendText("Training complete!\n");
+            rtbConsole.ScrollToCaret();
         }
 
         private void btnData_Click(object sender, EventArgs e)
