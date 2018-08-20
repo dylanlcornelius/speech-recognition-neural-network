@@ -10,6 +10,49 @@ Network::Network(){}
 
 Network::~Network(){}
 
+extern "C" _declspec(dllexport) Network* CreateNetwork() {
+	return new Network();
+}
+
+extern "C" _declspec(dllexport) std::list<Matrix>* CreateInputs(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+	//std::list<Matrix>* inputs;
+	//inputs->push_back({ std::vector<std::vector<double> >(1, std::vector<double>({ x1, arg2 })) });
+
+	Matrix i1 = { std::vector<std::vector<double> >(1, std::vector<double>({ x1, y1 })) };
+	Matrix i2 = { std::vector<std::vector<double> >(1, std::vector<double>({ x2, y2 })) };
+	Matrix i3 = { std::vector<std::vector<double> >(1, std::vector<double>({ x3, y3 })) };
+	Matrix i4 = { std::vector<std::vector<double> >(1, std::vector<double>({ x4, y4 })) };
+	std::list<Matrix>* inputs = new std::list<Matrix> { i1, i2, i3, i4 };
+
+	return inputs;
+}
+
+extern "C" _declspec(dllexport) std::list<Matrix>* CreateExpected(double x1, double x2, double x3, double x4) {
+	//std::list<Matrix>* expected;
+	//expected->push_back({ std::vector<std::vector<double> >(1, std::vector<double>({ arg1 })) });
+
+	Matrix e1 = { std::vector<std::vector<double> >(1, std::vector<double>({ x1 })) };
+	Matrix e2 = { std::vector<std::vector<double> >(1, std::vector<double>({ x2 })) };
+	Matrix e3 = { std::vector<std::vector<double> >(1, std::vector<double>({ x3 })) };
+	Matrix e4 = { std::vector<std::vector<double> >(1, std::vector<double>({ x4 })) };
+	std::list<Matrix>* expected = new std::list<Matrix> { e1, e2, e3, e4 };
+
+	return expected;
+}
+
+extern "C" _declspec(dllexport) void Train(Network* network, std::list<Matrix>* &inputs, std::list<Matrix>* &expected, int &hiddenCount, int &trainingIterations, double &learningRate) {
+	network->Train(inputs, expected, hiddenCount, trainingIterations, learningRate);
+}
+
+extern "C" _declspec(dllexport)  void Run(Network* network, Matrix &inputs) {
+	network->Run(inputs);
+}
+
+extern "C" _declspec(dllexport) int HelloWorld() {
+	//std::cout << "Hello World!" << std::endl;
+	return 117;
+}
+
 //Trains the network for a given set of inputs
 void Network::Train(std::list<Matrix> &inputs, std::list<Matrix> &expected, int &hiddenCount, int &trainingIterations, double &learningRate) {
 	//rows = different inputs, cols = 1 input

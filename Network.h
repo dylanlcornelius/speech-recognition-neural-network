@@ -3,6 +3,13 @@
 #include "Matrix.h"
 #include <list>
 
+/*
+extern "C" {
+	void Train(Network &network, std::list<Matrix> &inputs, std::list<Matrix> &expected, int &hiddenCount, int &trainingIterations, double &learningRate);
+	void Run(Network &network, Matrix &inputs);
+}
+*/
+
 class Network
 {
 public:
