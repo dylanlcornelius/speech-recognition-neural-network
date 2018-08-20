@@ -3,12 +3,28 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace SpeechRecognitionNN
 {
     public partial class MainForm : Form
     {
+        [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
+        public static extern IntPtr CreateNetwork();
+
+        [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
+        public static extern IntPtr CreateInputs(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
+
+        [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
+        public static extern IntPtr CreateExpected(double x1, double x2, double x3, double x4);
+
+        [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
+        public static extern void Train(IntPtr network, );
+
+        [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
+        public static extern int HelloWorld();
+
         const int SIZE_X = 4000;
         const int SIZE_Y = 40000;
         const int tick = 10;
@@ -58,11 +74,14 @@ namespace SpeechRecognitionNN
 
         private void btnTrain_Click(object sender, EventArgs e)
         {
+            rtbConsole.AppendText(HelloWorld()+"");
+            /*
             pbrEpochs.Increment(-epochs);
             for (int i = 0; i < epochs; i++)
             {
                 pbrEpochs.PerformStep();
             }
+            */
             rtbConsole.AppendText("Training complete!\n");
             rtbConsole.ScrollToCaret();
         }
