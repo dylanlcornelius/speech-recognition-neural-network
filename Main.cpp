@@ -28,7 +28,7 @@ int main(int argc, char *argb[]) {
 	std::list<Matrix> expected = {e1, e2, e3, e4};
 
 	Network xor;
-	xor.Train(inputs, expected, hiddenCount, trainingIterations, learningRate);
+	//xor.Train(inputs, expected, hiddenCount, trainingIterations, learningRate);
 
 	Matrix r1 = { std::vector<std::vector<double> >(1, std::vector<double>({ 1, 1 })) };
 	xor.Run(r1);
