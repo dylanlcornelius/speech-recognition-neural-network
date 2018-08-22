@@ -34,5 +34,41 @@ namespace SpeechRecognitionNN.Properties {
                 this["FFT"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public int HiddenCount {
+            get {
+                return ((int)(this["HiddenCount"]));
+            }
+            set {
+                this["HiddenCount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public int Epochs {
+            get {
+                return ((int)(this["Epochs"]));
+            }
+            set {
+                this["Epochs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.12")]
+        public double LearningRate {
+            get {
+                return ((double)(this["LearningRate"]));
+            }
+            set {
+                this["LearningRate"] = value;
+            }
+        }
     }
 }
