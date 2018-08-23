@@ -29,18 +29,18 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea10 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend10 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title10 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea11 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend11 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title11 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea12 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend12 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title12 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title7 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title8 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title9 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.chartError = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -71,26 +71,26 @@
             // 
             // chartError
             // 
-            chartArea10.Name = "ChartArea1";
-            this.chartError.ChartAreas.Add(chartArea10);
-            legend10.Enabled = false;
-            legend10.Name = "Legend1";
-            this.chartError.Legends.Add(legend10);
+            chartArea7.Name = "ChartArea1";
+            this.chartError.ChartAreas.Add(chartArea7);
+            legend7.Enabled = false;
+            legend7.Name = "Legend1";
+            this.chartError.Legends.Add(legend7);
             this.chartError.Location = new System.Drawing.Point(12, 41);
             this.chartError.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.chartError.Name = "chartError";
-            series10.ChartArea = "ChartArea1";
-            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series10.Legend = "Legend1";
-            series10.Name = "MSE";
-            this.chartError.Series.Add(series10);
+            series7.ChartArea = "ChartArea1";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series7.Legend = "Legend1";
+            series7.Name = "MSE";
+            this.chartError.Series.Add(series7);
             this.chartError.Size = new System.Drawing.Size(575, 300);
             this.chartError.TabIndex = 1;
             this.chartError.Text = "chart1";
-            title10.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title10.Name = "chartTitle";
-            title10.Text = "Network MSE";
-            this.chartError.Titles.Add(title10);
+            title7.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            title7.Name = "chartTitle";
+            title7.Text = "Network MSE";
+            this.chartError.Titles.Add(title7);
             // 
             // timer1
             // 
@@ -99,26 +99,26 @@
             // 
             // chartAudio
             // 
-            chartArea11.Name = "ChartArea1";
-            this.chartAudio.ChartAreas.Add(chartArea11);
-            legend11.Enabled = false;
-            legend11.Name = "Legend1";
-            this.chartAudio.Legends.Add(legend11);
+            chartArea8.Name = "ChartArea1";
+            this.chartAudio.ChartAreas.Add(chartArea8);
+            legend8.Enabled = false;
+            legend8.Name = "Legend1";
+            this.chartAudio.Legends.Add(legend8);
             this.chartAudio.Location = new System.Drawing.Point(596, 41);
             this.chartAudio.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.chartAudio.Name = "chartAudio";
-            series11.ChartArea = "ChartArea1";
-            series11.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
-            series11.Legend = "Legend1";
-            series11.Name = "Input";
-            this.chartAudio.Series.Add(series11);
+            series8.ChartArea = "ChartArea1";
+            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+            series8.Legend = "Legend1";
+            series8.Name = "Input";
+            this.chartAudio.Series.Add(series8);
             this.chartAudio.Size = new System.Drawing.Size(575, 300);
             this.chartAudio.TabIndex = 2;
             this.chartAudio.Text = "chart1";
-            title11.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title11.Name = "chartTitle";
-            title11.Text = "Audio Input";
-            this.chartAudio.Titles.Add(title11);
+            title8.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            title8.Name = "chartTitle";
+            title8.Text = "Audio Input";
+            this.chartAudio.Titles.Add(title8);
             // 
             // btnTrain
             // 
@@ -138,9 +138,10 @@
             // 
             // openFileDialog1
             // 
-            this.openFileDialog1.DefaultExt = "txt";
+            this.openFileDialog1.DefaultExt = "wav";
             this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            this.openFileDialog1.Filter = "Text files (*.wav)|*.wav|All files (*.*)|*.*";
+            this.openFileDialog1.InitialDirectory = "C:\\Users\\Dylan\\Desktop";
             // 
             // btnData
             // 
@@ -166,6 +167,7 @@
             this.tbxData.Size = new System.Drawing.Size(231, 25);
             this.tbxData.TabIndex = 6;
             this.tbxData.Text = "No Training Data Selected";
+            this.tbxData.TextChanged += new System.EventHandler(this.tbxData_TextChanged);
             // 
             // pbrEpochs
             // 
@@ -197,26 +199,26 @@
             // 
             // chartFreq
             // 
-            chartArea12.Name = "ChartArea1";
-            this.chartFreq.ChartAreas.Add(chartArea12);
-            legend12.Enabled = false;
-            legend12.Name = "Legend1";
-            this.chartFreq.Legends.Add(legend12);
+            chartArea9.Name = "ChartArea1";
+            this.chartFreq.ChartAreas.Add(chartArea9);
+            legend9.Enabled = false;
+            legend9.Name = "Legend1";
+            this.chartFreq.Legends.Add(legend9);
             this.chartFreq.Location = new System.Drawing.Point(598, 40);
             this.chartFreq.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.chartFreq.Name = "chartFreq";
-            series12.ChartArea = "ChartArea1";
-            series12.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
-            series12.Legend = "Legend1";
-            series12.Name = "Input";
-            this.chartFreq.Series.Add(series12);
+            series9.ChartArea = "ChartArea1";
+            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+            series9.Legend = "Legend1";
+            series9.Name = "Input";
+            this.chartFreq.Series.Add(series9);
             this.chartFreq.Size = new System.Drawing.Size(575, 300);
             this.chartFreq.TabIndex = 10;
             this.chartFreq.Text = "chart1";
-            title12.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title12.Name = "chartTitle";
-            title12.Text = "Audio Frequency";
-            this.chartFreq.Titles.Add(title12);
+            title9.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            title9.Name = "chartTitle";
+            title9.Text = "Audio Frequency";
+            this.chartFreq.Titles.Add(title9);
             // 
             // cbxTrain
             // 

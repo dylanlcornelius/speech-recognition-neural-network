@@ -37,7 +37,6 @@ namespace SpeechRecognitionNN
         public static extern double Train(IntPtr network, IntPtr inputs, IntPtr expected, double learningRate);
         */
 
-        
         [DllImport("XORNN.dll")]
         public static extern IntPtr CreateNetwork();
 
@@ -62,6 +61,7 @@ namespace SpeechRecognitionNN
         const int SIZE_Y2 = 800;
         const int TICK = 10;
 
+        string filePath;
         int hiddenCount;
         int epochs;
         double learningRate;
@@ -76,7 +76,7 @@ namespace SpeechRecognitionNN
         {
             InitializeComponent();
 
-            //***change epoch error chart***
+            filePath = "No Training Data Selected";
 
             hiddenCount = Properties.Settings.Default.HiddenCount;
             epochs = Properties.Settings.Default.Epochs;
@@ -296,8 +296,74 @@ namespace SpeechRecognitionNN
 
                 Init(network, inputs, hiddenCount);
 
+                //playground
+                if (!filePath.Equals("No Training Data Selected"))
+                {
+                    using (WaveFileReader reader = new WaveFileReader(filePath))
+                    {
+                        int pow = (int)Math.Pow(2, Math.Ceiling(Math.Log(reader.Length) / Math.Log(2)));
+
+                        for (int j = 0; j < pow; j += SIZE_BUFFER)
+                        {
+                            Console.WriteLine(j);
+                            byte[] bytesBuffer = new byte[SIZE_BUFFER];
+                            reader.Read(bytesBuffer, 0, bytesBuffer.Length);
+                            //int read = reader.Read(bytesBuffer, 0, bytesBuffer.Length);
+                            //int[] sampleBuffer = new int[read / 2];
+                            //Buffer.BlockCopy(bytesBuffer, 0, sampleBuffer, 0, read);
+
+                            int SAMPLE_RESOLUTION = 16;
+                            int BYTES_PER_POINT = SAMPLE_RESOLUTION / 8;
+                            Int32[] vals = new Int32[bytesBuffer.Length / BYTES_PER_POINT];
+                            double[] Ys = new double[bytesBuffer.Length / BYTES_PER_POINT];
+                            double[] Xs = new double[bytesBuffer.Length / BYTES_PER_POINT];
+                            double[] Ys2 = new double[bytesBuffer.Length / BYTES_PER_POINT];
+                            double[] Xs2 = new double[bytesBuffer.Length / BYTES_PER_POINT];
+                            for (int i = 0; i < vals.Length; i++)
+                            {
+                                byte hByte = bytesBuffer[i * 2 + 1];
+                                byte lByte = bytesBuffer[i * 2 + 0];
+                                vals[i] = (int)(short)((hByte << 8) | lByte);
+                                Xs[i] = i;
+                                Ys[i] = vals[i];
+                                Xs2[i] = (double)i / Ys.Length * RATE / 1000.0;
+                            }
+
+                            /*
+                            foreach (double b in Ys)
+                            {
+                                Console.WriteLine(b);
+                            }
+                            */
+
+                            Series series2 = new Series();
+                            series2.ChartType = SeriesChartType.FastLine;
+                            for (int i = 0; i < Xs.Length; i++)
+                            {
+                                series2.Points.AddXY(Xs[i], Ys[i]);
+                            }
+                            chartAudio.Invoke(new Action(() => chartAudio.Series.Clear()));
+                            chartAudio.Invoke(new Action(() => chartAudio.Series.Add(series2)));
+                            chartAudio.Invoke(new Action(() => chartAudio.Update()));
+
+                            Ys2 = FFT(Ys);
+                            series2 = new Series();
+                            series2.ChartType = SeriesChartType.FastLine;
+                            for (int i = 0; i < Xs2.Length / 2; i++)
+                            {
+                                series2.Points.AddXY(Xs2.Take(Xs2.Length / 2).ToArray()[i], Ys2.Take(Ys2.Length / 2).ToArray()[i]);
+                            }
+                            chartFreq.Invoke(new Action(() => chartFreq.Series.Clear()));
+                            chartFreq.Invoke(new Action(() => chartFreq.Series.Add(series2)));
+                            chartFreq.Invoke(new Action(() => chartFreq.Update()));
+                        }
+                    }
+                }
+                
+
                 Series series = new Series();
                 series.ChartType = SeriesChartType.FastLine;
+                chartError.Invoke(new Action(() => chartError.ChartAreas[0].AxisX.Maximum = epochs));
                 chartError.Invoke(new Action(() => chartError.Series.Clear()));
                 chartError.Invoke(new Action(() => chartError.Series.Add(series)));
                 for (int i = 0; i < epochs; i++)
@@ -320,6 +386,8 @@ namespace SpeechRecognitionNN
                 }
                 rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\n")));
                 rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
+
+                Thread.Sleep(2000);
             }
         }
 
@@ -383,6 +451,25 @@ namespace SpeechRecognitionNN
             Properties.Settings.Default["Epochs"] = epochs;
             Properties.Settings.Default["LearningRate"] = learningRate;
             Properties.Settings.Default.Save();
+        }
+
+        private void tbxData_TextChanged(object sender, EventArgs e)
+        {
+            if (File.Exists(tbxData.Text))
+            {
+                if (Path.GetExtension(tbxData.Text) == ".wav")
+                {
+                    this.filePath = tbxData.Text;
+                }
+                else
+                {
+                    tbxData.Text = "No Training Data Selected";
+                }
+            }
+            else
+            {
+                tbxData.Text = "No Training Data Selected";
+            }
         }
 
         private void tsbHiddenCount_TextChanged(object sender, EventArgs e)
