@@ -14,5 +14,11 @@
     <Setting Name="LearningRate" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.12</Value>
     </Setting>
+    <Setting Name="DataPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="WeightsPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Weights.txt</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

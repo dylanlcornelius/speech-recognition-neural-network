@@ -29,23 +29,22 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title7 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title8 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title9 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.chartError = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.chartAudio = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.btnTrain = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btnData = new System.Windows.Forms.Button();
             this.tbxData = new System.Windows.Forms.TextBox();
@@ -63,6 +62,9 @@
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.tsbLearningRate = new System.Windows.Forms.ToolStripTextBox();
             this.tsbSave = new System.Windows.Forms.ToolStripButton();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.tbxWeights = new System.Windows.Forms.TextBox();
+            this.btnWeights = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chartError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartAudio)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartFreq)).BeginInit();
@@ -71,26 +73,26 @@
             // 
             // chartError
             // 
-            chartArea7.Name = "ChartArea1";
-            this.chartError.ChartAreas.Add(chartArea7);
-            legend7.Enabled = false;
-            legend7.Name = "Legend1";
-            this.chartError.Legends.Add(legend7);
+            chartArea1.Name = "ChartArea1";
+            this.chartError.ChartAreas.Add(chartArea1);
+            legend1.Enabled = false;
+            legend1.Name = "Legend1";
+            this.chartError.Legends.Add(legend1);
             this.chartError.Location = new System.Drawing.Point(12, 41);
             this.chartError.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.chartError.Name = "chartError";
-            series7.ChartArea = "ChartArea1";
-            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series7.Legend = "Legend1";
-            series7.Name = "MSE";
-            this.chartError.Series.Add(series7);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Legend = "Legend1";
+            series1.Name = "MSE";
+            this.chartError.Series.Add(series1);
             this.chartError.Size = new System.Drawing.Size(575, 300);
             this.chartError.TabIndex = 1;
             this.chartError.Text = "chart1";
-            title7.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title7.Name = "chartTitle";
-            title7.Text = "Network MSE";
-            this.chartError.Titles.Add(title7);
+            title1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            title1.Name = "chartTitle";
+            title1.Text = "Network MSE";
+            this.chartError.Titles.Add(title1);
             // 
             // timer1
             // 
@@ -99,48 +101,32 @@
             // 
             // chartAudio
             // 
-            chartArea8.Name = "ChartArea1";
-            this.chartAudio.ChartAreas.Add(chartArea8);
-            legend8.Enabled = false;
-            legend8.Name = "Legend1";
-            this.chartAudio.Legends.Add(legend8);
+            chartArea2.Name = "ChartArea1";
+            this.chartAudio.ChartAreas.Add(chartArea2);
+            legend2.Enabled = false;
+            legend2.Name = "Legend1";
+            this.chartAudio.Legends.Add(legend2);
             this.chartAudio.Location = new System.Drawing.Point(596, 41);
             this.chartAudio.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.chartAudio.Name = "chartAudio";
-            series8.ChartArea = "ChartArea1";
-            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
-            series8.Legend = "Legend1";
-            series8.Name = "Input";
-            this.chartAudio.Series.Add(series8);
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+            series2.Legend = "Legend1";
+            series2.Name = "Input";
+            this.chartAudio.Series.Add(series2);
             this.chartAudio.Size = new System.Drawing.Size(575, 300);
             this.chartAudio.TabIndex = 2;
             this.chartAudio.Text = "chart1";
-            title8.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title8.Name = "chartTitle";
-            title8.Text = "Audio Input";
-            this.chartAudio.Titles.Add(title8);
-            // 
-            // btnTrain
-            // 
-            this.btnTrain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.btnTrain.FlatAppearance.BorderSize = 0;
-            this.btnTrain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTrain.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnTrain.Location = new System.Drawing.Point(513, 12);
-            this.btnTrain.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.btnTrain.Name = "btnTrain";
-            this.btnTrain.Size = new System.Drawing.Size(74, 23);
-            this.btnTrain.TabIndex = 3;
-            this.btnTrain.Text = "Train";
-            this.btnTrain.UseVisualStyleBackColor = false;
-            this.btnTrain.Visible = false;
-            this.btnTrain.Click += new System.EventHandler(this.btnTrain_Click);
+            title2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            title2.Name = "chartTitle";
+            title2.Text = "Audio Input";
+            this.chartAudio.Titles.Add(title2);
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.DefaultExt = "wav";
             this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.Filter = "Text files (*.wav)|*.wav|All files (*.*)|*.*";
+            this.openFileDialog1.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
             this.openFileDialog1.InitialDirectory = "C:\\Users\\Dylan\\Desktop";
             // 
             // btnData
@@ -148,8 +134,8 @@
             this.btnData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnData.FlatAppearance.BorderSize = 0;
             this.btnData.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnData.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnData.Location = new System.Drawing.Point(327, 9);
+            this.btnData.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnData.Location = new System.Drawing.Point(271, 10);
             this.btnData.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnData.Name = "btnData";
             this.btnData.Size = new System.Drawing.Size(100, 25);
@@ -161,12 +147,11 @@
             // tbxData
             // 
             this.tbxData.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbxData.Location = new System.Drawing.Point(92, 9);
+            this.tbxData.Location = new System.Drawing.Point(67, 9);
             this.tbxData.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tbxData.Name = "tbxData";
-            this.tbxData.Size = new System.Drawing.Size(231, 25);
+            this.tbxData.Size = new System.Drawing.Size(200, 25);
             this.tbxData.TabIndex = 6;
-            this.tbxData.Text = "No Training Data Selected";
             this.tbxData.TextChanged += new System.EventHandler(this.tbxData_TextChanged);
             // 
             // pbrEpochs
@@ -189,7 +174,7 @@
             // cbxFFT
             // 
             this.cbxFFT.AutoSize = true;
-            this.cbxFFT.Location = new System.Drawing.Point(596, 17);
+            this.cbxFFT.Location = new System.Drawing.Point(1009, 14);
             this.cbxFFT.Name = "cbxFFT";
             this.cbxFFT.Size = new System.Drawing.Size(106, 17);
             this.cbxFFT.TabIndex = 9;
@@ -199,26 +184,26 @@
             // 
             // chartFreq
             // 
-            chartArea9.Name = "ChartArea1";
-            this.chartFreq.ChartAreas.Add(chartArea9);
-            legend9.Enabled = false;
-            legend9.Name = "Legend1";
-            this.chartFreq.Legends.Add(legend9);
+            chartArea3.Name = "ChartArea1";
+            this.chartFreq.ChartAreas.Add(chartArea3);
+            legend3.Enabled = false;
+            legend3.Name = "Legend1";
+            this.chartFreq.Legends.Add(legend3);
             this.chartFreq.Location = new System.Drawing.Point(598, 40);
             this.chartFreq.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.chartFreq.Name = "chartFreq";
-            series9.ChartArea = "ChartArea1";
-            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
-            series9.Legend = "Legend1";
-            series9.Name = "Input";
-            this.chartFreq.Series.Add(series9);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+            series3.Legend = "Legend1";
+            series3.Name = "Input";
+            this.chartFreq.Series.Add(series3);
             this.chartFreq.Size = new System.Drawing.Size(575, 300);
             this.chartFreq.TabIndex = 10;
             this.chartFreq.Text = "chart1";
-            title9.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title9.Name = "chartTitle";
-            title9.Text = "Audio Frequency";
-            this.chartFreq.Titles.Add(title9);
+            title3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            title3.Name = "chartTitle";
+            title3.Text = "Audio Frequency";
+            this.chartFreq.Titles.Add(title3);
             // 
             // cbxTrain
             // 
@@ -231,10 +216,10 @@
             this.cbxTrain.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.cbxTrain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cbxTrain.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxTrain.Location = new System.Drawing.Point(12, 9);
+            this.cbxTrain.Location = new System.Drawing.Point(12, 10);
             this.cbxTrain.Name = "cbxTrain";
-            this.cbxTrain.Size = new System.Drawing.Size(75, 25);
-            this.cbxTrain.TabIndex = 11;
+            this.cbxTrain.Size = new System.Drawing.Size(50, 25);
+            this.cbxTrain.TabIndex = 0;
             this.cbxTrain.Text = "Train";
             this.cbxTrain.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.cbxTrain.UseVisualStyleBackColor = false;
@@ -250,9 +235,9 @@
             this.cbxRun.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.cbxRun.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cbxRun.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxRun.Location = new System.Drawing.Point(1096, 8);
+            this.cbxRun.Location = new System.Drawing.Point(1121, 9);
             this.cbxRun.Name = "cbxRun";
-            this.cbxRun.Size = new System.Drawing.Size(75, 25);
+            this.cbxRun.Size = new System.Drawing.Size(50, 25);
             this.cbxRun.TabIndex = 12;
             this.cbxRun.Text = "Run";
             this.cbxRun.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -323,11 +308,42 @@
             this.tsbSave.Text = "Save Settings";
             this.tsbSave.Click += new System.EventHandler(this.tsbSave_Click);
             // 
+            // folderBrowserDialog1
+            // 
+            this.folderBrowserDialog1.Description = "Select training data folder";
+            // 
+            // tbxWeights
+            // 
+            this.tbxWeights.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbxWeights.Location = new System.Drawing.Point(375, 9);
+            this.tbxWeights.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.tbxWeights.Name = "tbxWeights";
+            this.tbxWeights.Size = new System.Drawing.Size(200, 25);
+            this.tbxWeights.TabIndex = 14;
+            this.tbxWeights.TextChanged += new System.EventHandler(this.tbxWeights_TextChanged);
+            // 
+            // btnWeights
+            // 
+            this.btnWeights.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.btnWeights.FlatAppearance.BorderSize = 0;
+            this.btnWeights.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnWeights.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnWeights.Location = new System.Drawing.Point(579, 9);
+            this.btnWeights.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btnWeights.Name = "btnWeights";
+            this.btnWeights.Size = new System.Drawing.Size(100, 25);
+            this.btnWeights.TabIndex = 15;
+            this.btnWeights.Text = "Select Weights";
+            this.btnWeights.UseVisualStyleBackColor = false;
+            this.btnWeights.Click += new System.EventHandler(this.btnWeights_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 681);
+            this.Controls.Add(this.btnWeights);
+            this.Controls.Add(this.tbxWeights);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.cbxRun);
             this.Controls.Add(this.cbxTrain);
@@ -337,7 +353,6 @@
             this.Controls.Add(this.pbrEpochs);
             this.Controls.Add(this.tbxData);
             this.Controls.Add(this.btnData);
-            this.Controls.Add(this.btnTrain);
             this.Controls.Add(this.chartAudio);
             this.Controls.Add(this.chartError);
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -358,7 +373,6 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chartError;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartAudio;
-        private System.Windows.Forms.Button btnTrain;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button btnData;
         private System.Windows.Forms.TextBox tbxData;
@@ -376,6 +390,9 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel3;
         private System.Windows.Forms.ToolStripTextBox tsbLearningRate;
         private System.Windows.Forms.ToolStripButton tsbSave;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.TextBox tbxWeights;
+        private System.Windows.Forms.Button btnWeights;
     }
 }
 

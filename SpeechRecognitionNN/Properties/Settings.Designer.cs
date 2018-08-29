@@ -70,5 +70,29 @@ namespace SpeechRecognitionNN.Properties {
                 this["LearningRate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DataPath {
+            get {
+                return ((string)(this["DataPath"]));
+            }
+            set {
+                this["DataPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Weights.txt")]
+        public string WeightsPath {
+            get {
+                return ((string)(this["WeightsPath"]));
+            }
+            set {
+                this["WeightsPath"] = value;
+            }
+        }
     }
 }
