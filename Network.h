@@ -15,7 +15,9 @@ class Network
 public:
 	Network();
 
-	void Initialization(std::list<Matrix> inputs, int hiddenCount);
+	void Initialization(std::list<Matrix> inputs, int hiddenCount, int outputCount);
+	void ReadWeights(char* weightsPath);
+	void WriteWeights(char* weightsPath);
 	//void Train(int hiddenCount, int epochs, double learningRate);
 	double Train(std::list<Matrix> inputs, std::list<Matrix> expected, double learningRate);
 	//double* Train(std::list<Matrix> inputs, std::list<Matrix> expected, int hiddenCount, int epochs, double learningRate);
@@ -24,8 +26,6 @@ public:
 	~Network();
 
 private:
-	int const OUTPUT_COUNT = 1;
-
 	double epochMSE;
 
 	Matrix Inputs;
@@ -49,6 +49,9 @@ private:
 
 	//Temporary assertion while weights are not stored.
 	bool IsTrained;
+
+	void ReadSection(std::fstream &file, Matrix *matrix);
+	void WriteSection(std::fstream &file, Matrix *matrix);
 
 	void Feedforward();
 	void Backpropagation(Matrix &expected);
