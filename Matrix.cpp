@@ -136,7 +136,7 @@ Matrix Matrix::Transpose() {
 
 //
 Matrix Matrix::Step() {
-	Matrix result(columns, rows);
+	Matrix result(rows, columns);
 
 	for (int i = 0; i < rows; i++)
 		for (int j = 0; j < columns; j++) {
@@ -199,7 +199,7 @@ Matrix Matrix::ApplyHyperbolic() {
 
 //Hyperbolic Tangent Function
 double Matrix::HyperbolicTangent(double x) {
-	return (exp(2 * x) - 1) / (exp(2 * x) + 1);
+	return (1 - exp(2 * x)) / (1 + exp(-(2 * x)));
 }
 
 //Matrix application of a given function to every element

@@ -32,25 +32,46 @@ extern "C" _declspec(dllexport) std::list<Matrix>* CreateMatrixList(double* data
 	return matrixList;
 }
 
-extern "C" _declspec(dllexport) void Init(Network* network, std::list<Matrix>* inputs, int hiddenCount, int outputCount, char* weightsPath) {
-	network->Initialization(*inputs, hiddenCount, outputCount);
+extern "C" _declspec(dllexport) void Init(Network* network, int inputCount, int hiddenCount, int outputCount, char* weightsPath) {
+	network->Initialization(inputCount, hiddenCount, outputCount);
 	network->ReadWeights(weightsPath);
 }
 
-extern "C" _declspec(dllexport) double Train(Network* network, std::list<Matrix>* inputs, std::list<Matrix>* expected, double learningRate) {
-	return network->Train(*inputs, *expected, learningRate);
+extern "C" _declspec(dllexport) double Train(Network* network, std::list<Matrix>* inputs, std::list<Matrix>* expected, double learningRate, double momentum) {
+	return network->Train(*inputs, *expected, learningRate, momentum);
 }
 
 extern "C" _declspec(dllexport) void Export(Network* network, char* weightsPath) {
 	network->WriteWeights(weightsPath);
 }
 
-extern "C" _declspec(dllexport)  void Run(Network* network, Matrix &inputs) {
-	network->Run(inputs);
+extern "C" _declspec(dllexport) int GetInputSize(Network* network, char* weightsPath) {
+	return network->ReadSize(weightsPath);
+}
+
+extern "C" _declspec(dllexport)  double* Run(Network* network, double* data, int columns) {
+	Matrix matrix = Matrix(1, columns);
+	for (int i = 0; i < columns; i++) {
+		matrix.matrix[0][i] = data[i];
+	}
+
+	//AllocConsole();
+	//freopen("CONOUT$", "w", stdout);
+
+	//std::cout << matrix.columns << std::endl;
+
+	Matrix result = network->Run(matrix);
+
+	double* output = new double[result.columns];
+	for (int i = 0; i < result.columns; i++) {
+		output[i] = result.matrix[0][i];
+	}
+
+	return output;
 }
 
 //Trains the network for a given set of inputs
-double Network::Train(std::list<Matrix> inputs, std::list<Matrix> expected, double learningRate) {
+double Network::Train(std::list<Matrix> inputs, std::list<Matrix> expected, double learningRate, double momentum) {
 
 	double epochMSE = 0;
 
@@ -64,15 +85,15 @@ double Network::Train(std::list<Matrix> inputs, std::list<Matrix> expected, doub
 		Feedforward();
 		Backpropagation(Expected);
 
-		epochMSE += MSE(Expected) * MSE(Expected);
+		epochMSE += MSE(Expected).Sum();
 
 		++inputsA;
 		++expectedA;
 	}
 
-	SGD(learningRate);
+	SGD(learningRate, momentum);
 
-	epochMSE = epochMSE / expected.size() * 10;
+	epochMSE = epochMSE / (expected.size() * expected.front().columns) * 100;
 
 	if (epochMSE < 0.0001 && !IsTrained)
 		IsTrained = true;
@@ -140,13 +161,33 @@ double*  Network::Train(std::list<Matrix> inputs, std::list<Matrix> expected, in
 */
 
 //Runs the network with a given set of inputs
-void Network::Run(Matrix &inputs) {
+Matrix Network::Run(Matrix &inputs) {
 	Inputs = inputs;
 
 	if (IsTrained) {
 		Feedforward();
-		PrintTest(inputs);
+		//PrintTest(inputs);
 	}
+
+	return Outputs.Step();
+}
+
+int Network::ReadSize(char* weightsPath) {
+	std::fstream file;
+	file.open(weightsPath, std::fstream::in);
+
+	std::string v;
+	int i = 0;
+	while (std::getline(file, v, ',')) {
+		if (v[0] == ':') {
+			break;
+		}
+		if (v[0] == '/') {
+			i++;
+		}
+	}
+
+	return i;
 }
 
 void Network::ReadWeights(char* weightsPath) {
@@ -209,9 +250,10 @@ void Network::WriteSection(std::fstream &file, Matrix *matrix) {
 }
 
 //Randomize the starting weights of the network
-void Network::Initialization(std::list<Matrix> inputs, int hiddenCount, int outputCount) {
-	Weights1 = Matrix(inputs.front().columns, hiddenCount);
-	dWeights1 = Matrix(inputs.front().columns, hiddenCount);
+void Network::Initialization(int inputCount, int hiddenCount, int outputCount) {
+	Weights1 = Matrix(inputCount, hiddenCount);
+	dWeights1 = Matrix(inputCount, hiddenCount);
+	dWeights1prev = Matrix(inputCount, hiddenCount);
 	Bias1 = Matrix(std::vector<std::vector<double> >(1, std::vector<double>(hiddenCount, 1.0)));
 	dBias1 = Matrix(1, hiddenCount);
 	Activation1 = Matrix(1, hiddenCount);
@@ -219,6 +261,7 @@ void Network::Initialization(std::list<Matrix> inputs, int hiddenCount, int outp
 
 	Weights2 = Matrix(hiddenCount, outputCount);
 	dWeights2 = Matrix(hiddenCount, outputCount);
+	dWeights2prev = Matrix(hiddenCount, outputCount);
 	Bias2 = Matrix(std::vector<std::vector<double> >(1, std::vector<double>(outputCount, 1.0)));
 	dBias2 = Matrix(1, outputCount);
 	Activation2 = Matrix(1, outputCount);
@@ -233,38 +276,45 @@ void Network::Initialization(std::list<Matrix> inputs, int hiddenCount, int outp
 void Network::Feedforward() {
 	Activation1 = Inputs.Dot(Weights1) + Bias1;
 	Hidden = Activation1.ApplySigmoid();
+	//Hidden = Activation1.ApplyHyperbolic();
 
 	Activation2 = Hidden.Dot(Weights2) + Bias2;
 	Outputs = Activation2.ApplySigmoid();
+	//Outputs = Activation2.ApplyHyperbolic();
 }
 
 //Calculate the gradient descents for the network weights.
 void Network::Backpropagation(Matrix &expected) {
 	dBias2 = (Outputs - expected) * Activation2.ApplySigmoidP(); //- (y - y)
+	//dBias2 = (Outputs - expected) * Activation2.ApplyHyperbolicP();
 	dWeights2 = (Hidden.Transpose().Dot(dBias2));
 
 	//dBias1 = dBias2.Dot(Weights2.Transpose() * Activation1.ApplySigmoidP());
 	dBias1 = dBias2.Dot(Weights2.Transpose()) * Activation1.ApplySigmoidP();
+	//dBias1 = dBias2.Dot(Weights2.Transpose()) * Activation1.ApplyHyperbolicP();
 	dWeights1 = (Inputs.Transpose().Dot(dBias1));
 }
 
 //Update weights with calculated gradient descents
-void Network::SGD(double &learningRate) {
-	Weights1 = Weights1 - (dWeights1.MultiplyScalar(learningRate));
+void Network::SGD(double &learningRate, double &momentum) {
+	dWeights1prev = dWeights1prev.MultiplyScalar(momentum) + dWeights1.MultiplyScalar(learningRate);
+	Weights1 = Weights1 - dWeights1prev;
 	Bias1 = Bias1 - (dBias1.MultiplyScalar(learningRate));
-	Weights2 = Weights2 - (dWeights2.MultiplyScalar(learningRate));
+	
+	dWeights2prev = dWeights2prev.MultiplyScalar(0.5) + dWeights2.MultiplyScalar(learningRate);
+	Weights2 = Weights2 - dWeights2prev;
 	Bias2 = Bias2 - (dBias2.MultiplyScalar(learningRate));
 }
 
-double Network::MSE(Matrix &expected) {
-	return (Outputs - expected).Sum();
+Matrix Network::MSE(Matrix &expected) {
+	return ((Outputs - expected) * (Outputs - expected));
 }
 
 #pragma region PRINTING FUNCTIONS
 
 void Network::PrintResults(Matrix &expected, int &i) {
 	std::cout << "Iteration: " << i+1 << " ";
-	std::cout << "Error: " << MSE(expected) << std::endl;
+	//std::cout << "Error: " << MSE(expected) << std::endl;
 	std::cout << "Input: ";
 	Inputs.PrintMatrix();
 	std::cout << ", Output: ";
