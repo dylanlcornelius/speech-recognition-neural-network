@@ -65,6 +65,10 @@
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.tbxWeights = new System.Windows.Forms.TextBox();
             this.btnWeights = new System.Windows.Forms.Button();
+            this.btnTest = new System.Windows.Forms.Button();
+            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
+            this.tsbMomentum = new System.Windows.Forms.ToolStripTextBox();
+            this.cbxAbort = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.chartError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartAudio)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartFreq)).BeginInit();
@@ -135,10 +139,10 @@
             this.btnData.FlatAppearance.BorderSize = 0;
             this.btnData.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnData.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnData.Location = new System.Drawing.Point(271, 10);
+            this.btnData.Location = new System.Drawing.Point(301, 9);
             this.btnData.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnData.Name = "btnData";
-            this.btnData.Size = new System.Drawing.Size(100, 25);
+            this.btnData.Size = new System.Drawing.Size(76, 25);
             this.btnData.TabIndex = 5;
             this.btnData.Text = "Select Data";
             this.btnData.UseVisualStyleBackColor = false;
@@ -150,7 +154,7 @@
             this.tbxData.Location = new System.Drawing.Point(67, 9);
             this.tbxData.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tbxData.Name = "tbxData";
-            this.tbxData.Size = new System.Drawing.Size(200, 25);
+            this.tbxData.Size = new System.Drawing.Size(230, 25);
             this.tbxData.TabIndex = 6;
             this.tbxData.TextChanged += new System.EventHandler(this.tbxData_TextChanged);
             // 
@@ -215,7 +219,7 @@
             this.cbxTrain.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.cbxTrain.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.cbxTrain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cbxTrain.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxTrain.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxTrain.Location = new System.Drawing.Point(12, 10);
             this.cbxTrain.Name = "cbxTrain";
             this.cbxTrain.Size = new System.Drawing.Size(50, 25);
@@ -234,7 +238,7 @@
             this.cbxRun.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.cbxRun.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.cbxRun.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cbxRun.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxRun.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxRun.Location = new System.Drawing.Point(1121, 9);
             this.cbxRun.Name = "cbxRun";
             this.cbxRun.Size = new System.Drawing.Size(50, 25);
@@ -253,8 +257,10 @@
             this.tsbHiddenCount,
             this.toolStripLabel2,
             this.tsbEpochs,
-            this.toolStripLabel3,
+            this.toolStripLabel4,
             this.tsbLearningRate,
+            this.toolStripLabel3,
+            this.tsbMomentum,
             this.tsbSave});
             this.toolStrip1.Location = new System.Drawing.Point(0, 656);
             this.toolStrip1.Name = "toolStrip1";
@@ -289,8 +295,8 @@
             // toolStripLabel3
             // 
             this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(93, 22);
-            this.toolStripLabel3.Text = "Rate of Learning";
+            this.toolStripLabel3.Size = new System.Drawing.Size(112, 22);
+            this.toolStripLabel3.Text = "Update Momentum";
             // 
             // tsbLearningRate
             // 
@@ -315,10 +321,10 @@
             // tbxWeights
             // 
             this.tbxWeights.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbxWeights.Location = new System.Drawing.Point(375, 9);
+            this.tbxWeights.Location = new System.Drawing.Point(381, 9);
             this.tbxWeights.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tbxWeights.Name = "tbxWeights";
-            this.tbxWeights.Size = new System.Drawing.Size(200, 25);
+            this.tbxWeights.Size = new System.Drawing.Size(103, 25);
             this.tbxWeights.TabIndex = 14;
             this.tbxWeights.TextChanged += new System.EventHandler(this.tbxWeights_TextChanged);
             // 
@@ -328,7 +334,7 @@
             this.btnWeights.FlatAppearance.BorderSize = 0;
             this.btnWeights.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnWeights.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnWeights.Location = new System.Drawing.Point(579, 9);
+            this.btnWeights.Location = new System.Drawing.Point(487, 9);
             this.btnWeights.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnWeights.Name = "btnWeights";
             this.btnWeights.Size = new System.Drawing.Size(100, 25);
@@ -337,11 +343,59 @@
             this.btnWeights.UseVisualStyleBackColor = false;
             this.btnWeights.Click += new System.EventHandler(this.btnWeights_Click);
             // 
+            // btnTest
+            // 
+            this.btnTest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.btnTest.FlatAppearance.BorderSize = 0;
+            this.btnTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTest.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTest.Location = new System.Drawing.Point(598, 9);
+            this.btnTest.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(50, 25);
+            this.btnTest.TabIndex = 16;
+            this.btnTest.Text = "Test";
+            this.btnTest.UseVisualStyleBackColor = false;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            // 
+            // toolStripLabel4
+            // 
+            this.toolStripLabel4.Name = "toolStripLabel4";
+            this.toolStripLabel4.Size = new System.Drawing.Size(93, 22);
+            this.toolStripLabel4.Text = "Rate of Learning";
+            // 
+            // tsbMomentum
+            // 
+            this.tsbMomentum.Name = "tsbMomentum";
+            this.tsbMomentum.Size = new System.Drawing.Size(100, 25);
+            this.tsbMomentum.TextChanged += new System.EventHandler(this.tsbMomentum_TextChanged);
+            // 
+            // cbxAbort
+            // 
+            this.cbxAbort.Appearance = System.Windows.Forms.Appearance.Button;
+            this.cbxAbort.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.cbxAbort.Cursor = System.Windows.Forms.Cursors.Default;
+            this.cbxAbort.FlatAppearance.BorderSize = 0;
+            this.cbxAbort.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
+            this.cbxAbort.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.cbxAbort.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.cbxAbort.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cbxAbort.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxAbort.Location = new System.Drawing.Point(675, 9);
+            this.cbxAbort.Name = "cbxAbort";
+            this.cbxAbort.Size = new System.Drawing.Size(50, 25);
+            this.cbxAbort.TabIndex = 17;
+            this.cbxAbort.Text = "Abort";
+            this.cbxAbort.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbxAbort.UseVisualStyleBackColor = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 681);
+            this.Controls.Add(this.cbxAbort);
+            this.Controls.Add(this.btnTest);
             this.Controls.Add(this.btnWeights);
             this.Controls.Add(this.tbxWeights);
             this.Controls.Add(this.toolStrip1);
@@ -393,6 +447,10 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.TextBox tbxWeights;
         private System.Windows.Forms.Button btnWeights;
+        private System.Windows.Forms.Button btnTest;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel4;
+        private System.Windows.Forms.ToolStripTextBox tsbMomentum;
+        private System.Windows.Forms.CheckBox cbxAbort;
     }
 }
 

@@ -20,5 +20,8 @@
     <Setting Name="WeightsPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">Weights.txt</Value>
     </Setting>
+    <Setting Name="Momentum" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.9</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

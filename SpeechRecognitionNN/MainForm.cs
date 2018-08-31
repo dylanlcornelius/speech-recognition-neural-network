@@ -23,14 +23,23 @@ namespace SpeechRecognitionNN
         public static extern IntPtr CreateMatrixList(double[] data, int rows, int columns);
 
         [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
-        public static extern void Init(IntPtr network, IntPtr inputs, int hiddenCount, int outputCount, [MarshalAs(UnmanagedType.LPStr)] string weightsPath);
+        public static extern void Init(IntPtr network, int inputCount, int hiddenCount, int outputCount, [MarshalAs(UnmanagedType.LPStr)] string weightsPath);
+
+        [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern double Train(IntPtr network, IntPtr inputs, IntPtr expected, double learningRate, double momentum);
 
         [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
         public static extern void Export(IntPtr network, [MarshalAs(UnmanagedType.LPStr)] string weightsPath);
 
-        [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern double Train(IntPtr network, IntPtr inputs, IntPtr expected, double learningRate);
-        
+        [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
+        public static extern int GetInputSize(IntPtr network, [MarshalAs(UnmanagedType.LPStr)] string weightsPath);
+
+        [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
+        public static extern IntPtr Run(IntPtr network, double[] data, int columns);
+
+        //[DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
+        //public static extern double[] Run(IntPtr network, double[] data, int columns);
+
         /*
         [DllImport("XORNN.dll")]
         public static extern IntPtr CreateNetwork();
@@ -56,6 +65,7 @@ namespace SpeechRecognitionNN
         const int SIZE_Y2 = 800;
         const int TICK = 10;
 
+        
         Dictionary<char, double[]> l2n = new Dictionary<char, double[]>()
         {
             { 'h', new double[]{ 1, 0, 0, 0, 0 } },
@@ -65,6 +75,29 @@ namespace SpeechRecognitionNN
             { ' ', new double[]{ 0, 0, 0, 0, 1 } }
         };
 
+        Dictionary<int, char> n2l = new Dictionary<int, char>()
+        {
+            { 0, 'h' },
+            { 1, 'e' },
+            { 2, 'l' },
+            { 3, 'o' },
+            { 4, ' ' },
+            { 5, '.' }
+        };
+
+        /*
+        Dictionary<char, double[]> l2n = new Dictionary<char, double[]>()
+        {
+            { 'h', new double[]{ 1, -1, -1, -1, -1 } },
+            { 'e', new double[]{ -1, 1, -1, -1, -1 } },
+            { 'l', new double[]{ -1, -1, 1, -1, -1 } },
+            { 'o', new double[]{ -1, -1, -1, 1, -1 } },
+            { ' ', new double[]{ -1, -1, -1, 01, 1 } }
+        };
+        */
+
+        IntPtr network;
+
         string dataPath;
         string[] data;
         string[] labels;
@@ -73,6 +106,7 @@ namespace SpeechRecognitionNN
         int outputCount;
         int epochs;
         double learningRate;
+        double momentum;
 
         Thread trainingThread;
 
@@ -92,9 +126,12 @@ namespace SpeechRecognitionNN
             outputCount = l2n.Count;
             epochs = Properties.Settings.Default.Epochs;
             learningRate = Properties.Settings.Default.LearningRate;
+            momentum = Properties.Settings.Default.Momentum;
             tsbHiddenCount.Text = hiddenCount + "";
             tsbEpochs.Text = epochs + "";
             tsbLearningRate.Text = learningRate + "";
+            tsbMomentum.Text = momentum + "";
+
 
             showInputPlot((bool)Properties.Settings.Default["FFT"]);
 
@@ -126,6 +163,8 @@ namespace SpeechRecognitionNN
             chartFreq.ChartAreas[0].AxisY.MajorGrid.LineColor = gridColor;
             chartFreq.Series[0].Points.AddXY(0, 0);
 
+            rtbConsole.SelectionTabs = new int[] { 100, 200, 300, 400 };
+
             pbrEpochs.Maximum = epochs;
 
             input = new WaveIn();
@@ -147,11 +186,11 @@ namespace SpeechRecognitionNN
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            int frameSize = SIZE_BUFFER;
-            var frames = new byte[frameSize];
-            buffer.Read(frames, 0, frameSize);
+            //int frameSize = SIZE_BUFFER;
+            var frames = new byte[SIZE_BUFFER];
+            buffer.Read(frames, 0, SIZE_BUFFER);
             if (frames.Length == 0) return;
-            if (frames[frameSize - 2] == 0) return;
+            if (frames[SIZE_BUFFER - 2] == 0) return;
 
             timer1.Enabled = false;
 
@@ -193,22 +232,40 @@ namespace SpeechRecognitionNN
             chartFreq.Series.Add(series);
             chartFreq.Update();
 
-            /* move to its own method - when buffer is full - stop recreating network
-            double[] flatFFTs = new double[FFTs.Length * FFTs[0].Length];
-            for (int i = 0; i < FFTs.Length; i++)
+            Thread testingThread = new Thread(new ParameterizedThreadStart(RunTest));
+            testingThread.IsBackground = true;
+            testingThread.Start(Ys2);
+
+            timer1.Enabled = true;
+        }
+
+        private void RunTest(object myFFT)
+        {
+            double[] FFT = (double[])myFFT;
+            IntPtr ptr = Run(network, FFT, FFT.Length);
+            int size = outputCount;
+            double[] output = new double[size];
+            Marshal.Copy(ptr, output, 0, size);
+
+            /*
+            foreach (double d in output)
             {
-                for (int j = 0; j < FFTs[0].Length; j++)
+                Console.WriteLine(d);
+            }
+            */
+
+            int j = 0;
+            for (; j < output.Length; j++)
+            {
+                if (output[j] == 1)
                 {
-                    flatFFTs[(i * FFTs[0].Length) + j] = FFTs[i][j];
+                    break;
                 }
             }
 
-            IntPtr network = CreateNetwork();
-            IntPtr inputs = CreateMatrixList(flatFFTs, FFTs.Length, FFTs[0].Length);
-            Init(network, inputs, hiddenCount, outputCount, weightsPath);
-            */
+            //Console.WriteLine(n2l[j]);
 
-            timer1.Enabled = true;
+            rtbConsole.Invoke(new Action(() => rtbConsole.AppendText(n2l[j] + "")));
         }
 
         private double[] FFT(double[] data)
@@ -258,7 +315,7 @@ namespace SpeechRecognitionNN
 
                 double[][] FFTs = null;
                 string[][] lines = new string[data.Length][];
-                int width = 0;
+                int width = 0; 
                 for (int k = 0; k < data.Length; k++)
                 {
                     string text = File.ReadAllText(labels[k]);
@@ -266,11 +323,12 @@ namespace SpeechRecognitionNN
 
                     using (WaveFileReader reader = new WaveFileReader(data[k]))
                     {
-                        int pow = (int)Math.Pow(2, Math.Ceiling(Math.Log(reader.Length) / Math.Log(2)));
+                        //int pow = (int)Math.Pow(2, Math.Ceiling(Math.Log(reader.Length) / Math.Log(2)));
+                        int pow = 65536; //pow too small sometimes? biggest file...
                         width = pow / SIZE_BUFFER;
                         if (FFTs == null)
                         {
-                            FFTs = new double[data.Length * (pow / SIZE_BUFFER)][]; //number of separate files * number of 10 ms chunks
+                            FFTs = new double[(data.Length * (pow / SIZE_BUFFER))][]; //number of separate files * number of 10 ms chunks
                         }
 
                         for (int j = 0; j < (pow / SIZE_BUFFER); j++)
@@ -318,6 +376,9 @@ namespace SpeechRecognitionNN
                             chartFreq.Invoke(new Action(() => chartFreq.Series.Add(series2)));
                             chartFreq.Invoke(new Action(() => chartFreq.Update()));
 
+                            //Console.WriteLine(FFTs.Length);
+                            //Console.WriteLine((k * (pow / SIZE_BUFFER)) + j);
+
                             FFTs[(k * (pow / SIZE_BUFFER)) + j] = Ys2;
                         }
                     }
@@ -333,6 +394,16 @@ namespace SpeechRecognitionNN
                 }
                 //Expected letters
                 double[][] letters = LetterToNumber(lines, width);
+                /*
+                foreach (double[] sa in letters)
+                {
+                    foreach (double s in sa)
+                    {
+                        Console.WriteLine(s);
+                    }
+                    Console.WriteLine();
+                }
+                */
                 double[] flatLets = new double[letters.Length * letters[0].Length];
                 for (int i = 0; i < letters.Length; i++)
                 {
@@ -342,11 +413,11 @@ namespace SpeechRecognitionNN
                     }
                 }
 
-                IntPtr network = CreateNetwork();
+                network = CreateNetwork();
                 IntPtr expected = CreateMatrixList(flatLets, letters.Length, letters[0].Length);
                 IntPtr inputs = CreateMatrixList(flatFFTs, FFTs.Length, FFTs[0].Length);
 
-                Init(network, inputs, hiddenCount, outputCount, weightsPath);
+                Init(network, FFTs[0].Length, hiddenCount, outputCount, weightsPath);
 
                 Series series = new Series();
                 series.ChartType = SeriesChartType.FastLine;
@@ -354,25 +425,49 @@ namespace SpeechRecognitionNN
                 chartError.Invoke(new Action(() => chartError.Series.Clear()));
                 chartError.Invoke(new Action(() => chartError.Series.Add(series)));
                 pbrEpochs.Invoke(new Action(() => pbrEpochs.Maximum = epochs));
-                for (int i = 0; i < epochs; i++)
+                rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("\nTraining Started...\n")));
+                rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
+                double t = 0;
+                int e;
+                for (e = 0; e < epochs; e++)
                 {
-                    double d = Train(network, inputs, expected, learningRate);
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
 
-                    chartError.Invoke(new Action(() => series.Points.AddXY(i, d)));
+                    double d = Train(network, inputs, expected, learningRate, momentum);
+                    learningRate *= 1.1;
+
+                    if (e == 0)
+                    {
+                        chartError.Invoke(new Action(() => chartError.ChartAreas[0].AxisY.Maximum = (((int)Math.Ceiling(d / 100.0)) * 100)));
+                    }
+                    
+                    chartError.Invoke(new Action(() => series.Points.AddXY(e, d)));
                     chartError.Invoke(new Action(() => chartError.Update()));
 
-                    PrintEpoch(i, d); //only on debug
+                    stopwatch.Stop();
+                    t += Convert.ToDouble(stopwatch.Elapsed.TotalSeconds);
+                    PrintEpoch(e, d, Convert.ToDouble(stopwatch.Elapsed.TotalSeconds)); //only on debug
                     
                     pbrEpochs.Invoke(new Action(() => pbrEpochs.PerformStep()));
                     
-
+                    
                     if (d < 0.01)
                     {
                         pbrEpochs.Invoke(new Action(() => pbrEpochs.Value = pbrEpochs.Maximum));
                         break;
                     }
+                    else if (cbxAbort.Checked)
+                    {
+                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training aborted!\t\t\tAverage epoch time: " + (t / e + 1) + "\n")));
+                        rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
+                        cbxAbort.Invoke(new Action(() => cbxAbort.CheckState = CheckState.Unchecked));
+                        Export(network, weightsPath);
+                        return;
+                    }
+                    
                 }
-                rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\n")));
+                rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\t\t\tAverage epoch time: " + (t / e+1) + "\n")));
                 rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
 
                 Export(network, weightsPath);
@@ -397,8 +492,6 @@ namespace SpeechRecognitionNN
                     {
                         results[(i * width) + j] = l2n[lines[i][j].ToCharArray()[0]];
                     }
-                    //Console.WriteLine(i);
-                    //Console.WriteLine(j);
                 }
             }
 
@@ -406,9 +499,9 @@ namespace SpeechRecognitionNN
         }
 
         [ConditionalAttribute("DEBUG")]
-        private void PrintEpoch(int i, double d)
+        private void PrintEpoch(int i, double d, double t)
         {
-            rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Epoch: " + (i + 1) + " Error: " + d + "\n")));
+            rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Epoch: " + (i + 1) + "\tError: " + d + "\tTime: " + t + "\n")));
             rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
         }
 
@@ -434,15 +527,19 @@ namespace SpeechRecognitionNN
             if (!String.IsNullOrEmpty(dataPath))
             {
                 data = Directory.GetFiles(dataPath, "*.wav", SearchOption.AllDirectories);
+                /*
                 foreach (string d in data)
                 {
                     Console.WriteLine(d);
                 }
+                */
                 labels = Directory.GetFiles(dataPath, "*.txt", SearchOption.AllDirectories);
+                /*
                 foreach (string l in labels)
                 {
                     Console.WriteLine(l);
                 }
+                */
             }
         }
 
@@ -453,13 +550,87 @@ namespace SpeechRecognitionNN
 
         private void btnWeights_Click(object sender, EventArgs e)
         {
+            openFileDialog1.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (openFileDialog1.ShowDialog() == DialogResult.OK && !String.IsNullOrWhiteSpace(openFileDialog1.FileName))
             {
-                tbxWeights.Text = openFileDialog1.FileName;
+                tbxWeights.Text = openFileDialog1.SafeFileName;
                 weightsPath = tbxWeights.Text;
                 Properties.Settings.Default.WeightsPath = tbxWeights.Text;
                 Properties.Settings.Default.Save();
             }
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            network = CreateNetwork();
+            int inputCount = GetInputSize(network, weightsPath);
+            Init(network, inputCount, hiddenCount, outputCount, weightsPath);
+
+            for (int k = 0; k < data.Length; k++)
+            {
+                using (WaveFileReader reader = new WaveFileReader(data[k]))
+                {
+                    //int pow = (int)Math.Pow(2, Math.Ceiling(Math.Log(reader.Length) / Math.Log(2)));
+                    int pow = 65536; //pow too small sometimes? biggest file...
+
+                    for (int j = 0; j < (pow / SIZE_BUFFER); j++)
+                    {
+                        byte[] bytesBuffer = new byte[SIZE_BUFFER];
+                        reader.Read(bytesBuffer, 0, bytesBuffer.Length);
+
+                        int SAMPLE_RESOLUTION = 16;
+                        int BYTES_PER_POINT = SAMPLE_RESOLUTION / 8;
+                        Int32[] vals = new Int32[bytesBuffer.Length / BYTES_PER_POINT];
+                        double[] Ys = new double[bytesBuffer.Length / BYTES_PER_POINT];
+                        double[] Xs = new double[bytesBuffer.Length / BYTES_PER_POINT];
+                        double[] Ys2 = new double[bytesBuffer.Length / BYTES_PER_POINT];
+                        double[] Xs2 = new double[bytesBuffer.Length / BYTES_PER_POINT];
+                        for (int i = 0; i < vals.Length; i++)
+                        {
+                            byte hByte = bytesBuffer[i * 2 + 1];
+                            byte lByte = bytesBuffer[i * 2 + 0];
+                            vals[i] = (int)(short)((hByte << 8) | lByte);
+                            Xs[i] = i;
+                            Ys[i] = vals[i];
+                            Xs2[i] = (double)i / Ys.Length * RATE / 1000.0;
+                        }
+                        /*
+                        //wave
+                        Series series2 = new Series();
+                        series2.ChartType = SeriesChartType.FastLine;
+                        for (int i = 0; i < Xs.Length; i++)
+                        {
+                            series2.Points.AddXY(Xs[i], Ys[i]);
+                        }
+                        chartAudio.Invoke(new Action(() => chartAudio.Series.Clear()));
+                        chartAudio.Invoke(new Action(() => chartAudio.Series.Add(series2)));
+                        chartAudio.Invoke(new Action(() => chartAudio.Update()));
+
+                        //FFT
+                        Ys2 = FFT(Ys);
+                        series2 = new Series();
+                        series2.ChartType = SeriesChartType.FastLine;
+                        for (int i = 0; i < Xs2.Length / 2; i++)
+                        {
+                            series2.Points.AddXY(Xs2.Take(Xs2.Length / 2).ToArray()[i], Ys2.Take(Ys2.Length / 2).ToArray()[i]);
+                        }
+                        chartFreq.Invoke(new Action(() => chartFreq.Series.Clear()));
+                        chartFreq.Invoke(new Action(() => chartFreq.Series.Add(series2)));
+                        chartFreq.Invoke(new Action(() => chartFreq.Update()));
+                        */
+                        Ys2 = FFT(Ys);
+
+                        /*
+                        Thread testingThread = new Thread(new ParameterizedThreadStart(RunTest));
+                        testingThread.IsBackground = true;
+                        testingThread.Start(Ys2);
+                        */
+                        RunTest(Ys2);
+                    }
+                }
+            }
+
+            rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
         }
 
         private void cbxFFT_CheckedChanged(object sender, EventArgs e)
@@ -498,6 +669,10 @@ namespace SpeechRecognitionNN
         {
             if (cbxRun.Checked)
             {
+                network = CreateNetwork();
+                int inputCount = GetInputSize(network, weightsPath);
+                Init(network, inputCount, hiddenCount, outputCount, weightsPath);
+
                 input.StartRecording();
                 timer1.Start();
             }
@@ -510,6 +685,7 @@ namespace SpeechRecognitionNN
 
         private void tsbSave_Click(object sender, EventArgs e)
         {
+            Properties.Settings.Default["WeightsPath"] = weightsPath;
             Properties.Settings.Default["HiddenCount"] = hiddenCount;
             Properties.Settings.Default["Epochs"] = epochs;
             Properties.Settings.Default["LearningRate"] = learningRate;
@@ -549,6 +725,18 @@ namespace SpeechRecognitionNN
             else
             {
                 tsbLearningRate.Text = "";
+            }
+        }
+
+        private void tsbMomentum_TextChanged(object sender, EventArgs e)
+        {
+            if (Double.TryParse(tsbMomentum.Text, out double momentum))
+            {
+                this.momentum = momentum;
+            }
+            else
+            {
+                tsbMomentum.Text = "";
             }
         }
     }

@@ -94,5 +94,17 @@ namespace SpeechRecognitionNN.Properties {
                 this["WeightsPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.9")]
+        public double Momentum {
+            get {
+                return ((double)(this["Momentum"]));
+            }
+            set {
+                this["Momentum"] = value;
+            }
+        }
     }
 }
