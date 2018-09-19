@@ -46,8 +46,6 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.chartAudio = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.btnData = new System.Windows.Forms.Button();
-            this.tbxData = new System.Windows.Forms.TextBox();
             this.pbrEpochs = new System.Windows.Forms.ProgressBar();
             this.rtbConsole = new System.Windows.Forms.RichTextBox();
             this.cbxFFT = new System.Windows.Forms.CheckBox();
@@ -56,23 +54,29 @@
             this.cbxRun = new System.Windows.Forms.CheckBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.tsbHiddenCount = new System.Windows.Forms.ToolStripTextBox();
+            this.sbxHiddenCount = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
+            this.sbxHiddenCount2 = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
-            this.tsbEpochs = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
-            this.tsbLearningRate = new System.Windows.Forms.ToolStripTextBox();
-            this.tsbSave = new System.Windows.Forms.ToolStripButton();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.tbxWeights = new System.Windows.Forms.TextBox();
-            this.btnWeights = new System.Windows.Forms.Button();
-            this.btnTest = new System.Windows.Forms.Button();
+            this.sbxEpochs = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
-            this.tsbMomentum = new System.Windows.Forms.ToolStripTextBox();
+            this.sbxLearningRate = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
+            this.sbxMomentum = new System.Windows.Forms.ToolStripTextBox();
+            this.sbnSave = new System.Windows.Forms.ToolStripButton();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.btnTest = new System.Windows.Forms.Button();
             this.cbxAbort = new System.Windows.Forms.CheckBox();
+            this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+            this.sbxData = new System.Windows.Forms.ToolStripTextBox();
+            this.sbnData = new System.Windows.Forms.ToolStripButton();
+            this.sbxWeights = new System.Windows.Forms.ToolStripTextBox();
+            this.sbnWeights = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.chartError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartAudio)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartFreq)).BeginInit();
             this.toolStrip1.SuspendLayout();
+            this.toolStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // chartError
@@ -82,7 +86,7 @@
             legend1.Enabled = false;
             legend1.Name = "Legend1";
             this.chartError.Legends.Add(legend1);
-            this.chartError.Location = new System.Drawing.Point(12, 41);
+            this.chartError.Location = new System.Drawing.Point(11, 66);
             this.chartError.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.chartError.Name = "chartError";
             series1.ChartArea = "ChartArea1";
@@ -110,7 +114,7 @@
             legend2.Enabled = false;
             legend2.Name = "Legend1";
             this.chartAudio.Legends.Add(legend2);
-            this.chartAudio.Location = new System.Drawing.Point(596, 41);
+            this.chartAudio.Location = new System.Drawing.Point(598, 66);
             this.chartAudio.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.chartAudio.Name = "chartAudio";
             series2.ChartArea = "ChartArea1";
@@ -133,52 +137,27 @@
             this.openFileDialog1.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
             this.openFileDialog1.InitialDirectory = "C:\\Users\\Dylan\\Desktop";
             // 
-            // btnData
-            // 
-            this.btnData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.btnData.FlatAppearance.BorderSize = 0;
-            this.btnData.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnData.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnData.Location = new System.Drawing.Point(301, 9);
-            this.btnData.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.btnData.Name = "btnData";
-            this.btnData.Size = new System.Drawing.Size(76, 25);
-            this.btnData.TabIndex = 5;
-            this.btnData.Text = "Select Data";
-            this.btnData.UseVisualStyleBackColor = false;
-            this.btnData.Click += new System.EventHandler(this.btnData_Click);
-            // 
-            // tbxData
-            // 
-            this.tbxData.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbxData.Location = new System.Drawing.Point(67, 9);
-            this.tbxData.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tbxData.Name = "tbxData";
-            this.tbxData.Size = new System.Drawing.Size(230, 25);
-            this.tbxData.TabIndex = 6;
-            this.tbxData.TextChanged += new System.EventHandler(this.tbxData_TextChanged);
-            // 
             // pbrEpochs
             // 
-            this.pbrEpochs.Location = new System.Drawing.Point(12, 626);
+            this.pbrEpochs.Location = new System.Drawing.Point(12, 651);
             this.pbrEpochs.Name = "pbrEpochs";
-            this.pbrEpochs.Size = new System.Drawing.Size(1159, 23);
+            this.pbrEpochs.Size = new System.Drawing.Size(1160, 23);
             this.pbrEpochs.Step = 1;
             this.pbrEpochs.TabIndex = 7;
             // 
             // rtbConsole
             // 
-            this.rtbConsole.Location = new System.Drawing.Point(12, 347);
+            this.rtbConsole.Location = new System.Drawing.Point(13, 372);
             this.rtbConsole.Name = "rtbConsole";
             this.rtbConsole.ReadOnly = true;
-            this.rtbConsole.Size = new System.Drawing.Size(1159, 273);
+            this.rtbConsole.Size = new System.Drawing.Size(1160, 273);
             this.rtbConsole.TabIndex = 8;
             this.rtbConsole.Text = "";
             // 
             // cbxFFT
             // 
             this.cbxFFT.AutoSize = true;
-            this.cbxFFT.Location = new System.Drawing.Point(1009, 14);
+            this.cbxFFT.Location = new System.Drawing.Point(1066, 5);
             this.cbxFFT.Name = "cbxFFT";
             this.cbxFFT.Size = new System.Drawing.Size(106, 17);
             this.cbxFFT.TabIndex = 9;
@@ -193,7 +172,7 @@
             legend3.Enabled = false;
             legend3.Name = "Legend1";
             this.chartFreq.Legends.Add(legend3);
-            this.chartFreq.Location = new System.Drawing.Point(598, 40);
+            this.chartFreq.Location = new System.Drawing.Point(597, 66);
             this.chartFreq.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.chartFreq.Name = "chartFreq";
             series3.ChartArea = "ChartArea1";
@@ -219,10 +198,10 @@
             this.cbxTrain.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.cbxTrain.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.cbxTrain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cbxTrain.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxTrain.Location = new System.Drawing.Point(12, 10);
+            this.cbxTrain.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxTrain.Location = new System.Drawing.Point(13, 36);
             this.cbxTrain.Name = "cbxTrain";
-            this.cbxTrain.Size = new System.Drawing.Size(50, 25);
+            this.cbxTrain.Size = new System.Drawing.Size(75, 25);
             this.cbxTrain.TabIndex = 0;
             this.cbxTrain.Text = "Train";
             this.cbxTrain.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -238,10 +217,10 @@
             this.cbxRun.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.cbxRun.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.cbxRun.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cbxRun.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxRun.Location = new System.Drawing.Point(1121, 9);
+            this.cbxRun.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxRun.Location = new System.Drawing.Point(1097, 36);
             this.cbxRun.Name = "cbxRun";
-            this.cbxRun.Size = new System.Drawing.Size(50, 25);
+            this.cbxRun.Size = new System.Drawing.Size(75, 25);
             this.cbxRun.TabIndex = 12;
             this.cbxRun.Text = "Run";
             this.cbxRun.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -254,15 +233,17 @@
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel1,
-            this.tsbHiddenCount,
+            this.sbxHiddenCount,
+            this.toolStripLabel5,
+            this.sbxHiddenCount2,
             this.toolStripLabel2,
-            this.tsbEpochs,
+            this.sbxEpochs,
             this.toolStripLabel4,
-            this.tsbLearningRate,
+            this.sbxLearningRate,
             this.toolStripLabel3,
-            this.tsbMomentum,
-            this.tsbSave});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 656);
+            this.sbxMomentum,
+            this.sbnSave});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 681);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1184, 25);
             this.toolStrip1.TabIndex = 13;
@@ -271,14 +252,26 @@
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(136, 22);
-            this.toolStripLabel1.Text = "Count of Hidden Nodes:";
+            this.toolStripLabel1.Size = new System.Drawing.Size(126, 22);
+            this.toolStripLabel1.Text = "Hidden Layer 1 Nodes:";
             // 
-            // tsbHiddenCount
+            // sbxHiddenCount
             // 
-            this.tsbHiddenCount.Name = "tsbHiddenCount";
-            this.tsbHiddenCount.Size = new System.Drawing.Size(100, 25);
-            this.tsbHiddenCount.TextChanged += new System.EventHandler(this.tsbHiddenCount_TextChanged);
+            this.sbxHiddenCount.Name = "sbxHiddenCount";
+            this.sbxHiddenCount.Size = new System.Drawing.Size(50, 25);
+            this.sbxHiddenCount.TextChanged += new System.EventHandler(this.tsbHiddenCount_TextChanged);
+            // 
+            // toolStripLabel5
+            // 
+            this.toolStripLabel5.Name = "toolStripLabel5";
+            this.toolStripLabel5.Size = new System.Drawing.Size(126, 22);
+            this.toolStripLabel5.Text = "Hidden Layer 2 Nodes:";
+            // 
+            // sbxHiddenCount2
+            // 
+            this.sbxHiddenCount2.Name = "sbxHiddenCount2";
+            this.sbxHiddenCount2.Size = new System.Drawing.Size(50, 25);
+            this.sbxHiddenCount2.TextChanged += new System.EventHandler(this.tsbHiddenCount2_TextChanged);
             // 
             // toolStripLabel2
             // 
@@ -286,77 +279,11 @@
             this.toolStripLabel2.Size = new System.Drawing.Size(106, 22);
             this.toolStripLabel2.Text = "Number of Epochs";
             // 
-            // tsbEpochs
+            // sbxEpochs
             // 
-            this.tsbEpochs.Name = "tsbEpochs";
-            this.tsbEpochs.Size = new System.Drawing.Size(100, 25);
-            this.tsbEpochs.TextChanged += new System.EventHandler(this.tsbEpochs_TextChanged);
-            // 
-            // toolStripLabel3
-            // 
-            this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(112, 22);
-            this.toolStripLabel3.Text = "Update Momentum";
-            // 
-            // tsbLearningRate
-            // 
-            this.tsbLearningRate.Name = "tsbLearningRate";
-            this.tsbLearningRate.Size = new System.Drawing.Size(100, 25);
-            this.tsbLearningRate.TextChanged += new System.EventHandler(this.tsbLearningRate_TextChanged);
-            // 
-            // tsbSave
-            // 
-            this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.tsbSave.Image = ((System.Drawing.Image)(resources.GetObject("tsbSave.Image")));
-            this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbSave.Name = "tsbSave";
-            this.tsbSave.Size = new System.Drawing.Size(80, 22);
-            this.tsbSave.Text = "Save Settings";
-            this.tsbSave.Click += new System.EventHandler(this.tsbSave_Click);
-            // 
-            // folderBrowserDialog1
-            // 
-            this.folderBrowserDialog1.Description = "Select training data folder";
-            // 
-            // tbxWeights
-            // 
-            this.tbxWeights.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbxWeights.Location = new System.Drawing.Point(381, 9);
-            this.tbxWeights.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tbxWeights.Name = "tbxWeights";
-            this.tbxWeights.Size = new System.Drawing.Size(103, 25);
-            this.tbxWeights.TabIndex = 14;
-            this.tbxWeights.TextChanged += new System.EventHandler(this.tbxWeights_TextChanged);
-            // 
-            // btnWeights
-            // 
-            this.btnWeights.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.btnWeights.FlatAppearance.BorderSize = 0;
-            this.btnWeights.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnWeights.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnWeights.Location = new System.Drawing.Point(487, 9);
-            this.btnWeights.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.btnWeights.Name = "btnWeights";
-            this.btnWeights.Size = new System.Drawing.Size(100, 25);
-            this.btnWeights.TabIndex = 15;
-            this.btnWeights.Text = "Select Weights";
-            this.btnWeights.UseVisualStyleBackColor = false;
-            this.btnWeights.Click += new System.EventHandler(this.btnWeights_Click);
-            // 
-            // btnTest
-            // 
-            this.btnTest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.btnTest.FlatAppearance.BorderSize = 0;
-            this.btnTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTest.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnTest.Location = new System.Drawing.Point(598, 9);
-            this.btnTest.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(50, 25);
-            this.btnTest.TabIndex = 16;
-            this.btnTest.Text = "Test";
-            this.btnTest.UseVisualStyleBackColor = false;
-            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            this.sbxEpochs.Name = "sbxEpochs";
+            this.sbxEpochs.Size = new System.Drawing.Size(50, 25);
+            this.sbxEpochs.TextChanged += new System.EventHandler(this.tsbEpochs_TextChanged);
             // 
             // toolStripLabel4
             // 
@@ -364,11 +291,53 @@
             this.toolStripLabel4.Size = new System.Drawing.Size(93, 22);
             this.toolStripLabel4.Text = "Rate of Learning";
             // 
-            // tsbMomentum
+            // sbxLearningRate
             // 
-            this.tsbMomentum.Name = "tsbMomentum";
-            this.tsbMomentum.Size = new System.Drawing.Size(100, 25);
-            this.tsbMomentum.TextChanged += new System.EventHandler(this.tsbMomentum_TextChanged);
+            this.sbxLearningRate.Name = "sbxLearningRate";
+            this.sbxLearningRate.Size = new System.Drawing.Size(50, 25);
+            this.sbxLearningRate.TextChanged += new System.EventHandler(this.tsbLearningRate_TextChanged);
+            // 
+            // toolStripLabel3
+            // 
+            this.toolStripLabel3.Name = "toolStripLabel3";
+            this.toolStripLabel3.Size = new System.Drawing.Size(112, 22);
+            this.toolStripLabel3.Text = "Update Momentum";
+            // 
+            // sbxMomentum
+            // 
+            this.sbxMomentum.Name = "sbxMomentum";
+            this.sbxMomentum.Size = new System.Drawing.Size(50, 25);
+            this.sbxMomentum.TextChanged += new System.EventHandler(this.tsbMomentum_TextChanged);
+            // 
+            // sbnSave
+            // 
+            this.sbnSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.sbnSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.sbnSave.Image = ((System.Drawing.Image)(resources.GetObject("sbnSave.Image")));
+            this.sbnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.sbnSave.Name = "sbnSave";
+            this.sbnSave.Size = new System.Drawing.Size(80, 22);
+            this.sbnSave.Text = "Save Settings";
+            this.sbnSave.Click += new System.EventHandler(this.tsbSave_Click);
+            // 
+            // folderBrowserDialog1
+            // 
+            this.folderBrowserDialog1.Description = "Select training data folder";
+            // 
+            // btnTest
+            // 
+            this.btnTest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.btnTest.FlatAppearance.BorderSize = 0;
+            this.btnTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTest.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTest.Location = new System.Drawing.Point(511, 36);
+            this.btnTest.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(75, 25);
+            this.btnTest.TabIndex = 16;
+            this.btnTest.Text = "Test";
+            this.btnTest.UseVisualStyleBackColor = false;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
             // cbxAbort
             // 
@@ -380,33 +349,79 @@
             this.cbxAbort.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.cbxAbort.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.cbxAbort.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cbxAbort.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxAbort.Location = new System.Drawing.Point(675, 9);
+            this.cbxAbort.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxAbort.Location = new System.Drawing.Point(94, 36);
             this.cbxAbort.Name = "cbxAbort";
-            this.cbxAbort.Size = new System.Drawing.Size(50, 25);
+            this.cbxAbort.Size = new System.Drawing.Size(75, 25);
             this.cbxAbort.TabIndex = 17;
             this.cbxAbort.Text = "Abort";
             this.cbxAbort.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.cbxAbort.UseVisualStyleBackColor = false;
             // 
+            // toolStrip2
+            // 
+            this.toolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sbxData,
+            this.sbnData,
+            this.sbxWeights,
+            this.sbnWeights});
+            this.toolStrip2.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.toolStrip2.Size = new System.Drawing.Size(1184, 25);
+            this.toolStrip2.TabIndex = 18;
+            this.toolStrip2.Text = "toolStrip2";
+            // 
+            // sbxData
+            // 
+            this.sbxData.Name = "sbxData";
+            this.sbxData.Size = new System.Drawing.Size(230, 25);
+            this.sbxData.TextChanged += new System.EventHandler(this.sbxData_TextChanged);
+            // 
+            // sbnData
+            // 
+            this.sbnData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.sbnData.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.sbnData.Image = ((System.Drawing.Image)(resources.GetObject("sbnData.Image")));
+            this.sbnData.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.sbnData.Name = "sbnData";
+            this.sbnData.Size = new System.Drawing.Size(69, 22);
+            this.sbnData.Text = "Select Data";
+            this.sbnData.Click += new System.EventHandler(this.sbnData_Click);
+            // 
+            // sbxWeights
+            // 
+            this.sbxWeights.Name = "sbxWeights";
+            this.sbxWeights.Size = new System.Drawing.Size(100, 25);
+            this.sbxWeights.TextChanged += new System.EventHandler(this.sbxWeights_TextChanged);
+            // 
+            // sbnWeights
+            // 
+            this.sbnWeights.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.sbnWeights.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.sbnWeights.Image = ((System.Drawing.Image)(resources.GetObject("sbnWeights.Image")));
+            this.sbnWeights.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.sbnWeights.Name = "sbnWeights";
+            this.sbnWeights.Size = new System.Drawing.Size(88, 22);
+            this.sbnWeights.Text = "Select Weights";
+            this.sbnWeights.Click += new System.EventHandler(this.sbnWeights_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 681);
+            this.ClientSize = new System.Drawing.Size(1184, 706);
+            this.Controls.Add(this.cbxFFT);
+            this.Controls.Add(this.toolStrip2);
             this.Controls.Add(this.cbxAbort);
             this.Controls.Add(this.btnTest);
-            this.Controls.Add(this.btnWeights);
-            this.Controls.Add(this.tbxWeights);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.cbxRun);
             this.Controls.Add(this.cbxTrain);
             this.Controls.Add(this.chartFreq);
-            this.Controls.Add(this.cbxFFT);
             this.Controls.Add(this.rtbConsole);
             this.Controls.Add(this.pbrEpochs);
-            this.Controls.Add(this.tbxData);
-            this.Controls.Add(this.btnData);
             this.Controls.Add(this.chartAudio);
             this.Controls.Add(this.chartError);
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -418,6 +433,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartFreq)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.toolStrip2.ResumeLayout(false);
+            this.toolStrip2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -428,8 +445,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartAudio;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.Button btnData;
-        private System.Windows.Forms.TextBox tbxData;
         private System.Windows.Forms.ProgressBar pbrEpochs;
         private System.Windows.Forms.RichTextBox rtbConsole;
         private System.Windows.Forms.CheckBox cbxFFT;
@@ -438,19 +453,24 @@
         private System.Windows.Forms.CheckBox cbxRun;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
-        private System.Windows.Forms.ToolStripTextBox tsbHiddenCount;
+        private System.Windows.Forms.ToolStripTextBox sbxHiddenCount;
         private System.Windows.Forms.ToolStripLabel toolStripLabel2;
-        private System.Windows.Forms.ToolStripTextBox tsbEpochs;
+        private System.Windows.Forms.ToolStripTextBox sbxEpochs;
         private System.Windows.Forms.ToolStripLabel toolStripLabel3;
-        private System.Windows.Forms.ToolStripTextBox tsbLearningRate;
-        private System.Windows.Forms.ToolStripButton tsbSave;
+        private System.Windows.Forms.ToolStripTextBox sbxLearningRate;
+        private System.Windows.Forms.ToolStripButton sbnSave;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.TextBox tbxWeights;
-        private System.Windows.Forms.Button btnWeights;
         private System.Windows.Forms.Button btnTest;
         private System.Windows.Forms.ToolStripLabel toolStripLabel4;
-        private System.Windows.Forms.ToolStripTextBox tsbMomentum;
+        private System.Windows.Forms.ToolStripTextBox sbxMomentum;
         private System.Windows.Forms.CheckBox cbxAbort;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel5;
+        private System.Windows.Forms.ToolStripTextBox sbxHiddenCount2;
+        private System.Windows.Forms.ToolStrip toolStrip2;
+        private System.Windows.Forms.ToolStripTextBox sbxData;
+        private System.Windows.Forms.ToolStripButton sbnData;
+        private System.Windows.Forms.ToolStripTextBox sbxWeights;
+        private System.Windows.Forms.ToolStripButton sbnWeights;
     }
 }
 

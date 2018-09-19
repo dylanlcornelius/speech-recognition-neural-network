@@ -106,5 +106,17 @@ namespace SpeechRecognitionNN.Properties {
                 this["Momentum"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int HiddenCount2 {
+            get {
+                return ((int)(this["HiddenCount2"]));
+            }
+            set {
+                this["HiddenCount2"] = value;
+            }
+        }
     }
 }
