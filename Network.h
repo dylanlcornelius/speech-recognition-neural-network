@@ -17,19 +17,20 @@ public:
 
 	Matrix Inputs;
 
-	void Initialization(int inputCount, int hiddenCount, int outputCount);
+	void Initialization(int inputCount, int hiddenCount, int hiddenCount2, int outputCount);
 	int ReadSize(char* weightsPath);
 	void ReadWeights(char* weightsPath);
 	void WriteWeights(char* weightsPath);
 	//void Train(int hiddenCount, int epochs, double learningRate);
-	double Train(std::list<Matrix> inputs, std::list<Matrix> expected, double learningRate, double momentum);
+	double Train(std::vector<Matrix> inputs, std::vector<Matrix> expected, double learningRate, double momentum);
 	//double* Train(std::list<Matrix> inputs, std::list<Matrix> expected, int hiddenCount, int epochs, double learningRate);
 	Matrix Run(Matrix &inputs);
 
 	~Network();
 
 private:
-	double epochMSE;
+	double Momentum;
+	double epochMSEprev;
 
 	Matrix Weights1;
 	Matrix Bias1;
@@ -40,15 +41,22 @@ private:
 	Matrix Weights2;
 	Matrix Bias2;
 	Matrix Activation2;
+	Matrix Hidden2;
+
+	Matrix Weights3;
+	Matrix Bias3;
+	Matrix Activation3;
 	Matrix Outputs;
 
 	Matrix dWeights1;
 	Matrix dWeights1prev;
 	Matrix dWeights2;
 	Matrix dWeights2prev;
+	Matrix dWeights3;
+	Matrix dWeights3prev;
 	Matrix dBias1;
 	Matrix dBias2;
-
+	Matrix dBias3;
 
 	//Temporary assertion while weights are not stored.
 	bool IsTrained;

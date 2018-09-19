@@ -144,8 +144,27 @@ Matrix Matrix::Step() {
 				result.matrix[i][j] = 0;
 			else if (matrix[i][j] > 0.99)
 				result.matrix[i][j] = 1;
+			else
+				result.matrix[i][j] = matrix[i][j];
 		}
 		
+	return result;
+}
+
+Matrix Matrix::Round() {
+	Matrix result(rows, columns);
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < columns; j++) {
+			if (matrix[i][j] < .5) {
+				result.matrix[i][j] = 0;
+			}
+			else {
+				result.matrix[i][j] = 1;
+			}
+		}
+	}
+
 	return result;
 }
 
@@ -249,7 +268,31 @@ Matrix Matrix::ApplySigmoidP() {
 //Sigmoid Derivative Function
 //replace with Sigmoid(x)(1 - Sigmoid(x)) ?
 double Matrix::SigmoidDerivative(double x) {
+	if (x < 0.0000001) {
+		x = 0.00001;
+	}
 	return (exp(-x) / pow((1 + exp(-x)), 2));
+}
+
+//Softmax
+Matrix Matrix::ApplySoftmax() {
+	Matrix result(rows, columns);
+
+	double sum = 0.00001;
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < columns; j++) {
+			sum += exp(matrix[i][j]);
+		}
+	}
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < columns; j++) {
+			result.matrix[i][j] = exp(matrix[i][j]) / sum;
+		}
+	}
+
+	return result;
 }
 
 #pragma endregion

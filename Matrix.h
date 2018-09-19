@@ -22,6 +22,7 @@ public:
 	double Sum();
 	Matrix Transpose();
 	Matrix Step();
+	Matrix Round();
 	void PrintMatrix();
 
 	Matrix ApplyRandomize();
@@ -29,6 +30,7 @@ public:
 	Matrix ApplyHyperbolicP();
 	Matrix ApplySigmoid();
 	Matrix ApplySigmoidP();
+	Matrix ApplySoftmax();
 
 	~Matrix();
 
