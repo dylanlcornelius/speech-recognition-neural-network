@@ -65,7 +65,7 @@ namespace SpeechRecognitionNN
         private const int SIZE_Y = 8000;
         private const int SIZE_X2 = 25;
         private const int SIZE_Y2 = 100; //800
-        private const int TICK = 10;
+        private const int TICK = 20;
 
         /*
         private Dictionary<char, double[]> l2n = new Dictionary<char, double[]>()
@@ -77,16 +77,37 @@ namespace SpeechRecognitionNN
             { ' ', new double[]{ 1, 1, 1, 1, 0 } }
         };
         */
-        
+
+        /*
         private Dictionary<char, double[]> l2n = new Dictionary<char, double[]>()
         {
-            { 'h', new double[]{ 1, 0, 0, 0 } },
-            { 'e', new double[]{ 0, 1, 0, 0 } },
-            { 'l', new double[]{ 0, 0, 1, 0 } },
-            { 'o', new double[]{ 0, 0, 0, 1 } },
+            { 'h', new double[]{ 1, 0, 0, 0, 0, 0, 0 } },
+            { 'e', new double[]{ 0, 1, 0, 0, 0, 0, 0 } },
+            { 'l', new double[]{ 0, 0, 1, 0, 0, 0, 0 } },
+            { 'o', new double[]{ 0, 0, 0, 1, 0, 0, 0 } },
+            { 'a', new double[]{ 0, 0, 0, 0, 1, 0, 0 } },
+            { 'y', new double[]{ 0, 0, 0, 0, 0, 1, 0 } },
+            { 'i', new double[]{ 0, 0, 0, 0, 0, 0, 1 } }
         };
-        
+        */
 
+        private Dictionary<char, double[]> l2n = new Dictionary<char, double[]>()
+        {
+            { 'c', new double[]{ 1, 0, 0, 0 } },
+            { 'a', new double[]{ 0, 1, 0, 0 } },
+            { ' ', new double[]{ 0, 0, 1, 0 } },
+            { 't', new double[]{ 0, 0, 0, 1 } }
+        };
+
+        private Dictionary<string, char> n2l = new Dictionary<string, char>()
+        {
+            { "1000", 'c' },
+            { "0100", 'a' },
+            { "0010", '_' },
+            { "0001", 't' }
+        };
+
+        /*
         private Dictionary<int, char> n2l = new Dictionary<int, char>()
         {
             { 0, 'h' },
@@ -94,6 +115,7 @@ namespace SpeechRecognitionNN
             { 2, 'l' },
             { 3, 'o' },
         };
+        */
 
         private IntPtr network;
 
@@ -127,7 +149,7 @@ namespace SpeechRecognitionNN
             hiddenCount = Properties.Settings.Default.HiddenCount;
             hiddenCount2 = Properties.Settings.Default.HiddenCount2;
             //outputCount = (int)Math.Ceiling( Math.Log(l2n.Count) / Math.Log(2));
-            outputCount = 4;
+            outputCount = l2n.Count;
             epochs = Properties.Settings.Default.Epochs;
             learningRate = Properties.Settings.Default.LearningRate;
             momentum = Properties.Settings.Default.Momentum;
@@ -178,11 +200,11 @@ namespace SpeechRecognitionNN
             input = new WaveIn();
             input.WaveFormat = new WaveFormat(RATE, 1);
             //input.BufferMilliseconds = (int)((double)SIZE_BUFFER / RATE * 1000.0);
-            input.BufferMilliseconds = 10;
+            input.BufferMilliseconds = 20;
             input.DataAvailable += new EventHandler<WaveInEventArgs>(DataAvailable);
 
             buffer = new BufferedWaveProvider(input.WaveFormat);
-            buffer.BufferLength = 160 * 2;
+            buffer.BufferLength = 320 * 2;
             buffer.DiscardOnBufferOverflow = true;
 
             timer1.Interval = TICK;
@@ -205,10 +227,10 @@ namespace SpeechRecognitionNN
         /// <param name="e"></param>
         private void timer1_Tick(object sender, EventArgs e)
         {
-            var frames = new byte[512];
-            buffer.Read(frames, 0, 512);
+            var frames = new byte[640];
+            buffer.Read(frames, 0, 640);
             if (frames.Length == 0) return;
-            if (frames[320 - 2] == 0) return;
+            if (frames[640 - 2] == 0) return;
 
             timer1.Enabled = false;
 
@@ -232,15 +254,20 @@ namespace SpeechRecognitionNN
             */
 
             //List<double[]> FFTsList = new List<double[]>();
-            double[] d = new double[256];
-            for (int i = 0; i < 512; i+= 2)
+            double[] d = new double[320];
+            for (int i = 0; i < 640; i+= 2)
             {
                 double c = (short)((frames[i + 1] << 8) | frames[i]);
                 c = (c / 32768.0);
-                d[i / 2] = c;
+                d[i / 2] = c * 10;
             }
             //FFTsList.Add(FFT(d));
-            double[] FFTs = FFT(d);
+            double[] FFTs = d;
+
+            foreach (double dd in FFTs)
+            {
+                Console.WriteLine(dd);
+            }
 
             //for (int i = 0; i < 256; i++)
             //{
@@ -272,10 +299,12 @@ namespace SpeechRecognitionNN
             chartFreq.Update();
             */
 
-            Thread testingThread = new Thread(new ParameterizedThreadStart(RunTest));
-            testingThread.IsBackground = true;
+            //Thread testingThread = new Thread(new ParameterizedThreadStart(RunTest));
+            //testingThread.IsBackground = true;
             //testingThread.Start(Ys2);
-            testingThread.Start(FFTs);
+            //testingThread.Start(FFTs);
+
+            RunTest(FFTs);
 
             timer1.Enabled = true;
         }
@@ -284,7 +313,7 @@ namespace SpeechRecognitionNN
         /// Feeds FFT data to the network for evaluation
         /// </summary>
         /// <param name="myFFT"></param>
-        private void RunTest(object myFFT)
+        private char RunTest(object myFFT, char prevOutput = '/')
         {
             double[] FFT = (double[])myFFT;
             IntPtr ptr = Run(network, FFT, FFT.Length);
@@ -292,43 +321,28 @@ namespace SpeechRecognitionNN
             double[] output = new double[size];
             Marshal.Copy(ptr, output, 0, size);
 
-            /*
+            string key = "";
             foreach (double d in output)
             {
-                Console.WriteLine(d);
+                key += d;
             }
-            Console.WriteLine();
 
-            int j = 0;
-            foreach (double[] d in l2n.Values)
+            if (n2l.ContainsKey(key))
             {
-                bool isEqual = true;
-                for (int i = 0; i < output.Length; i++)
+                if (n2l[key] != prevOutput && n2l[key] != '_')
                 {
-                    Console.Write(d[i]);
-                    isEqual = true;
-                    if (output[i] != d[i])
-                    {
-                        isEqual = false;
-                    }
+                    rtbConsole.Invoke(new Action(() => rtbConsole.AppendText(n2l[key] + "\n")));
+                    rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
+                    return n2l[key];
                 }
-                Console.WriteLine();
-                if (isEqual)
-                {
-                    break;
-                }
-                j++;
-            } 
-            */
-
-            //Console.WriteLine(n2l[j]);
-
-            //rtbConsole.Invoke(new Action(() => rtbConsole.AppendText(n2l[j] + "")));
+            }
+            /*
             for (int i = 0; i < output.Length; i++)
             {
-                rtbConsole.Invoke(new Action(() => rtbConsole.AppendText(output[i] + ", ")));
+                rtbConsole.Invoke(new Action(() => rtbConsole.AppendText(output[i] + " ")));
             }
-            rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("\n")));
+            */
+            return prevOutput;
         }
 
         /// <summary>
@@ -399,12 +413,12 @@ namespace SpeechRecognitionNN
                     string samples = File.ReadAllText(data[k]);
                     string[] sample = samples.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                     double[] d;
-                    for (int i = 0; i < sample.Length / 160; i++)
+                    for (int i = 0; i < sample.Length / 320; i++)
                     {
-                        d = new double[256];
-                        for (int j = 0; j < 160; j++)
+                        d = new double[320];
+                        for (int j = 0; j < 320; j++)
                         {
-                            d[j] = Double.Parse(sample[i * 160 + j]) * 100000;
+                            d[j] = Double.Parse(sample[i * 320 + j])*10;
                         }
 
                         /*
@@ -420,7 +434,7 @@ namespace SpeechRecognitionNN
                         chartFreq.Invoke(new Action(() => chartFreq.Update()));
                         */
 
-                        FFTsList.Add(FFT(d));
+                        FFTsList.Add(d);
                         //Thread.Sleep(100);
                     }
                 }
@@ -435,6 +449,9 @@ namespace SpeechRecognitionNN
                     Console.WriteLine();
                 }
                 */
+
+                //Console.WriteLine(FFTsList.Count);
+
                 //FFT inputs
                 double[][] FFTs = new double[FFTsList.Count][];
                 FFTsList.CopyTo(FFTs);
@@ -442,9 +459,9 @@ namespace SpeechRecognitionNN
                 {
                     foreach (double d in dd)
                     {
-                        Console.Write(d + ", ");
+                        //Console.Write(d + ", ");
                     }
-                    Console.WriteLine();
+                    //Console.WriteLine(dd.Length);
                 }
 
                 double[] flatFFTs = new double[FFTs.Length * FFTs[0].Length];
@@ -484,6 +501,8 @@ namespace SpeechRecognitionNN
                     }
                 }
 
+                //Console.WriteLine(flatLets.Length / l2n.Count);
+
                 network = CreateNetwork();
                 IntPtr inputs = CreateMatrixVector(flatFFTs, FFTs.Length, FFTs[0].Length);
                 IntPtr expected = CreateMatrixVector(flatLets, letters.Length, letters[0].Length);
@@ -498,6 +517,7 @@ namespace SpeechRecognitionNN
                 pbrEpochs.Invoke(new Action(() => pbrEpochs.Maximum = epochs));
                 rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("\nTraining Started...\n")));
                 rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
+                double min = 3.5;
                 double t = 0;
                 int e;
                 for (e = 0; e < epochs; e++)
@@ -506,7 +526,8 @@ namespace SpeechRecognitionNN
                     stopwatch.Start();
 
                     double d = Train(network, inputs, expected, learningRate, momentum);
-                    //learningRate *= 1.1;
+                    //learningRate *= .95;
+                    //momentum *= 1.0001;
 
                     if (e == 0)
                     {
@@ -522,12 +543,31 @@ namespace SpeechRecognitionNN
 
                     pbrEpochs.Invoke(new Action(() => pbrEpochs.PerformStep()));
 
-
-                    if (d < 0.01)
+                    if (d < 0.001)
                     {
                         pbrEpochs.Invoke(new Action(() => pbrEpochs.Value = pbrEpochs.Maximum));
+                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\t\t\tAverage epoch time: " + (t / e + 1) + "\n")));
+                        rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
+                        Export(network, weightsPath);
+                        Thread.Sleep(2000);
                         break;
                     }
+                    else if (d < min)
+                    {
+                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training saved!\n")));
+                        rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
+                        Export(network, weightsPath);
+                        min = d;
+                        Console.WriteLine(min);
+                    }
+                    /*
+                    else if (e % 500 == 0)
+                    {
+                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training saved!\n")));
+                        rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
+                        Export(network, weightsPath);
+                    }
+                    */
                     else if (cbxAbort.Checked)
                     {
                         rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training aborted!\t\t\tAverage epoch time: " + (t / e + 1) + "\n")));
@@ -547,7 +587,7 @@ namespace SpeechRecognitionNN
                     {
                         rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\t\t\tAverage epoch time: " + (t / e + 1) + "\n")));
                         rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
-                        Export(network, weightsPath);
+                        //Export(network, weightsPath);
                         Thread.Sleep(2000);
                     }
                 }
@@ -938,7 +978,7 @@ namespace SpeechRecognitionNN
         /// <param name="i"></param>
         /// <param name="d"></param>
         /// <param name="t"></param>
-        [ConditionalAttribute("DEBUG")]
+        //[ConditionalAttribute("DEBUG")]
         private void PrintEpoch(int i, double d, double t)
         {
             rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Epoch: " + (i + 1) + "\tError: " + d + "\tTime: " + t + "\n")));
@@ -962,15 +1002,17 @@ namespace SpeechRecognitionNN
                 string samples = File.ReadAllText(data[k]);
                 string[] sample = samples.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                 double[] d;
-                for (int i = 0; i < sample.Length / 160; i++)
+                char prevOutput = '/';
+                for (int i = 0; i < sample.Length / 320; i++)
                 {
-                    d = new double[256];
-                    for (int j = 0; j < 160; j++)
+                    d = new double[320];
+                    for (int j = 0; j < 320; j++)
                     {
-                        d[j] = Double.Parse(sample[i * 160 + j]) * 100000;
+                        d[j] = Double.Parse(sample[i * 320 + j]) * 10;
                     }
-                    RunTest(FFT(d));
+                    prevOutput = RunTest(d, prevOutput);
                 }
+                rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("\n")));
             }
 
             rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
