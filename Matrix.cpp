@@ -154,16 +154,24 @@ Matrix Matrix::Step() {
 Matrix Matrix::Round() {
 	Matrix result(rows, columns);
 
+	int maxi = 0;
+	int maxj = 0;
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {
-			if (matrix[i][j] < .5) {
-				result.matrix[i][j] = 0;
+			if (matrix[i][j] > matrix[maxi][maxj]) {
+				maxi = i;
+				maxj = j;
 			}
-			else {
-				result.matrix[i][j] = 1;
-			}
+			
 		}
 	}
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < columns; j++) {
+			result.matrix[i][j] = 0;
+		}
+	}
+	result.matrix[maxi][maxj] = 1;
 
 	return result;
 }
