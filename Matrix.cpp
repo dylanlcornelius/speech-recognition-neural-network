@@ -3,6 +3,8 @@
 #include <assert.h>
 #include <iostream>
 
+#include <Windows.h>
+
 Matrix::Matrix(){}
 
 Matrix::~Matrix(){}
@@ -282,12 +284,13 @@ double Matrix::SigmoidDerivative(double x) {
 	return (exp(-x) / pow((1 + exp(-x)), 2));
 }
 
-//Softmax
+//Softmax Function
 Matrix Matrix::ApplySoftmax() {
 	Matrix result(rows, columns);
 
 	double sum = 0.00001;
 
+	//matrix[i][j] - max?
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {
 			sum += exp(matrix[i][j]);
@@ -297,6 +300,25 @@ Matrix Matrix::ApplySoftmax() {
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {
 			result.matrix[i][j] = exp(matrix[i][j]) / sum;
+		}
+	}
+
+	return result;
+}
+
+//Softmax Derivative Function
+Matrix Matrix::ApplySoftmaxP() {
+	assert(rows == 1);
+	Matrix result(columns, columns);
+
+	for (int i = 0; i < columns; i++) {
+		for (int j = 0; j < columns; j++) {
+			if (i == j) {
+				result.matrix[i][j] = matrix[0][j] * (1 - matrix[0][j]);
+			}
+			else {
+				result.matrix[i][j] = -matrix[0][j] * matrix[0][i];
+			}
 		}
 	}
 

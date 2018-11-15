@@ -108,11 +108,11 @@ double Network::Train(std::vector<Matrix> inputs, std::vector<Matrix> expected, 
 
 		epochMSE += MSE(Expected).Sum();
 
-		
+		/*
 		if (i % 43 == 0) {
 			SGD(learningRate, momentum);
 		}
-		
+		*/
 	}
 	
 	SGD(learningRate, momentum);
@@ -273,7 +273,7 @@ void Network::Feedforward() {
 
 //Calculate the gradient descents for the network weights.
 void Network::Backpropagation(Matrix &expected) {
-	dBias3 = (Outputs - expected) * (Activation3.ApplySigmoidP()); //- (y - y)
+	dBias3 = (Outputs - expected) * (Outputs.Dot(Activation3.ApplySigmoidP())); //- (y - y)
 	dWeights3 = (Hidden2.Transpose().Dot(dBias3));
 
 	dBias2 = dBias3.Dot(Weights3.Transpose()) * (Activation2.ApplySigmoidP());

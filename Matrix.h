@@ -31,6 +31,7 @@ public:
 	Matrix ApplySigmoid();
 	Matrix ApplySigmoidP();
 	Matrix ApplySoftmax();
+	Matrix ApplySoftmaxP();
 
 	~Matrix();
 
