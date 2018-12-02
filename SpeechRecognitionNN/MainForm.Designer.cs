@@ -1,4 +1,4 @@
-﻿namespace SpeechRecognitionNN
+﻿namespace SpeechRecognitionForm
 {
     partial class MainForm
     {
@@ -94,7 +94,7 @@
             series1.Legend = "Legend1";
             series1.Name = "MSE";
             this.chartError.Series.Add(series1);
-            this.chartError.Size = new System.Drawing.Size(575, 300);
+            this.chartError.Size = new System.Drawing.Size(1161, 300);
             this.chartError.TabIndex = 1;
             this.chartError.Text = "chart1";
             title1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -129,6 +129,7 @@
             title2.Name = "chartTitle";
             title2.Text = "Audio Input";
             this.chartAudio.Titles.Add(title2);
+            this.chartAudio.Visible = false;
             // 
             // openFileDialog1
             // 
@@ -172,7 +173,7 @@
             legend3.Enabled = false;
             legend3.Name = "Legend1";
             this.chartFreq.Legends.Add(legend3);
-            this.chartFreq.Location = new System.Drawing.Point(597, 66);
+            this.chartFreq.Location = new System.Drawing.Point(598, 87);
             this.chartFreq.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.chartFreq.Name = "chartFreq";
             series3.ChartArea = "ChartArea1";
@@ -180,13 +181,14 @@
             series3.Legend = "Legend1";
             series3.Name = "Input";
             this.chartFreq.Series.Add(series3);
-            this.chartFreq.Size = new System.Drawing.Size(575, 300);
+            this.chartFreq.Size = new System.Drawing.Size(575, 279);
             this.chartFreq.TabIndex = 10;
             this.chartFreq.Text = "chart1";
             title3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             title3.Name = "chartTitle";
             title3.Text = "Audio Frequency";
             this.chartFreq.Titles.Add(title3);
+            this.chartFreq.Visible = false;
             // 
             // cbxTrain
             // 
@@ -225,6 +227,7 @@
             this.cbxRun.Text = "Run";
             this.cbxRun.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.cbxRun.UseVisualStyleBackColor = false;
+            this.cbxRun.Visible = false;
             this.cbxRun.CheckedChanged += new System.EventHandler(this.cbxRun_CheckedChanged);
             // 
             // toolStrip1
@@ -412,6 +415,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 706);
+            this.Controls.Add(this.chartError);
             this.Controls.Add(this.cbxFFT);
             this.Controls.Add(this.toolStrip2);
             this.Controls.Add(this.cbxAbort);
@@ -423,7 +427,6 @@
             this.Controls.Add(this.rtbConsole);
             this.Controls.Add(this.pbrEpochs);
             this.Controls.Add(this.chartAudio);
-            this.Controls.Add(this.chartError);
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
