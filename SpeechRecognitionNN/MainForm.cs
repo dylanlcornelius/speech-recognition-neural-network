@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -18,9 +17,6 @@ namespace SpeechRecognitionNN
         
         [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
         public static extern IntPtr CreateNetwork();
-
-        //[DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
-        //public static extern IntPtr CreateMatrixList(double[] data, int rows, int columns);
 
         [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
         public static extern IntPtr CreateMatrixVector(double[] data, int rows, int columns);
@@ -39,30 +35,34 @@ namespace SpeechRecognitionNN
 
         [DllImport(@"C:\Users\Dylan\source\repos\XOR-NN\x64\Debug\XORNN.dll")]
         public static extern IntPtr Run(IntPtr network, double[] data, int columns);
-
+        
         /*
         [DllImport("XORNN.dll")]
         public static extern IntPtr CreateNetwork();
 
         [DllImport("XORNN.dll")]
-        public static extern IntPtr CreateInputs(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
+        public static extern IntPtr CreateMatrixVector(double[] data, int rows, int columns);
 
         [DllImport("XORNN.dll")]
-        public static extern IntPtr CreateExpected(double x1, double x2, double x3, double x4);
-
-        [DllImport("XORNN.dll")]
-        public static extern void Init(IntPtr network, IntPtr inputs, int hiddenCount, int outputCount);
+        public static extern void Init(IntPtr network, int inputCount, int hiddenCount, int hiddenCount2, int outputCount, [MarshalAs(UnmanagedType.LPStr)] string weightsPath);
 
         [DllImport("XORNN.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern double Train(IntPtr network, IntPtr inputs, IntPtr expected, double learningRate);
+        public static extern double Train(IntPtr network, IntPtr inputs, IntPtr expected, double learningRate, double momentum);
+
+        [DllImport("XORNN.dll")]
+        public static extern void Export(IntPtr network, [MarshalAs(UnmanagedType.LPStr)] string weightsPath);
+
+        [DllImport("XORNN.dll")]
+        public static extern int GetInputSize(IntPtr network, [MarshalAs(UnmanagedType.LPStr)] string weightsPath);
+
+        [DllImport("XORNN.dll")]
+        public static extern IntPtr Run(IntPtr network, double[] data, int columns);
         */
 
-        //private const int RATE = 44100;
         private const int RATE = 16000;
-        //private const int SIZE_BUFFER = 2048;
-        private const int SIZE_BUFFER = 1024;
-        private const int SIZE_X = 1000;
-        private const int SIZE_Y = 8000;
+        //private const int SIZE_BUFFER = 1024;
+        private const int SIZE_X = 320;
+        private const int SIZE_Y = 5;
         private const int SIZE_X2 = 25;
         private const int SIZE_Y2 = 100; //800
         private const int TICK = 20;
@@ -81,18 +81,6 @@ namespace SpeechRecognitionNN
         /*
         private Dictionary<char, double[]> l2n = new Dictionary<char, double[]>()
         {
-            { 'h', new double[]{ 1, 0, 0, 0, 0, 0, 0 } },
-            { 'e', new double[]{ 0, 1, 0, 0, 0, 0, 0 } },
-            { 'l', new double[]{ 0, 0, 1, 0, 0, 0, 0 } },
-            { 'o', new double[]{ 0, 0, 0, 1, 0, 0, 0 } },
-            { 'a', new double[]{ 0, 0, 0, 0, 1, 0, 0 } },
-            { 'y', new double[]{ 0, 0, 0, 0, 0, 1, 0 } },
-            { 'i', new double[]{ 0, 0, 0, 0, 0, 0, 1 } }
-        };
-        */
-
-        private Dictionary<char, double[]> l2n = new Dictionary<char, double[]>()
-        {
             { 'c', new double[]{ 1, 0, 0, 0 } },
             { 'a', new double[]{ 0, 1, 0, 0 } },
             { ' ', new double[]{ 0, 0, 1, 0 } },
@@ -106,16 +94,97 @@ namespace SpeechRecognitionNN
             { "0010", '_' },
             { "0001", 't' }
         };
-
-        /*
-        private Dictionary<int, char> n2l = new Dictionary<int, char>()
-        {
-            { 0, 'h' },
-            { 1, 'e' },
-            { 2, 'l' },
-            { 3, 'o' },
-        };
         */
+
+        private Dictionary<string, double[]> l2n = new Dictionary<string, double[]>()
+        {
+            { "b",  new double[]{ 0, 0, 0, 0, 0, 0 } },
+            { "d",  new double[]{ 0, 0, 0, 0, 0, 1 } },
+            { "f",  new double[]{ 0, 0, 0, 0, 1, 0 } },
+            { "g",  new double[]{ 0, 0, 0, 0, 1, 1 } },
+            { "h",  new double[]{ 0, 0, 0, 1, 0, 0 } },
+            { "dg", new double[]{ 0, 0, 0, 1, 0, 1 } },
+            { "k",  new double[]{ 0, 0, 0, 1, 1, 0 } },
+            { "l",  new double[]{ 0, 0, 0, 1, 1, 1 } },
+            { "m",  new double[]{ 0, 0, 1, 0, 0, 0 } },
+            { "n",  new double[]{ 0, 0, 1, 0, 0, 1 } },
+            { "p",  new double[]{ 0, 0, 1, 0, 1, 0 } },
+            { "r",  new double[]{ 0, 0, 1, 0, 1, 1 } },
+            { "s",  new double[]{ 0, 0, 1, 1, 0, 0 } },
+            { "t",  new double[]{ 0, 0, 1, 1, 0, 1 } },
+            { "v",  new double[]{ 0, 0, 1, 1, 1, 0 } },
+            { "w",  new double[]{ 0, 0, 1, 1, 1, 1 } },
+            { "ch", new double[]{ 0, 1, 0, 0, 0, 0 } },
+            { "sh", new double[]{ 0, 1, 0, 0, 0, 1 } },
+            { "th", new double[]{ 0, 1, 0, 0, 1, 0 } },
+            { "ng", new double[]{ 0, 1, 0, 0, 1, 1 } },
+            { "j",  new double[]{ 0, 1, 0, 1, 0, 0 } },
+            { "a",  new double[]{ 0, 1, 0, 1, 0, 1 } },
+            { "ay", new double[]{ 0, 1, 0, 1, 1, 0 } },
+            { "e",  new double[]{ 0, 1, 0, 1, 1, 1 } },
+            { "i",  new double[]{ 0, 1, 1, 0, 0, 0 } },
+            { "ii", new double[]{ 0, 1, 1, 0, 0, 1 } },
+            { "ai", new double[]{ 0, 1, 1, 0, 1, 0 } },
+            { "aw", new double[]{ 0, 1, 1, 0, 1, 1 } },
+            { "o",  new double[]{ 0, 1, 1, 1, 0, 0 } },
+            { "uo", new double[]{ 0, 1, 1, 1, 0, 1 } },
+            { "ou", new double[]{ 0, 1, 1, 1, 1, 0 } },
+            { "ew", new double[]{ 0, 1, 1, 1, 1, 1 } },
+            { "oi", new double[]{ 1, 0, 0, 0, 0, 0 } },
+            { "ow", new double[]{ 1, 0, 0, 0, 0, 1 } },
+            { "au", new double[]{ 1, 0, 0, 0, 1, 0 } },
+            { "er", new double[]{ 1, 0, 0, 0, 1, 1 } },
+            { "or", new double[]{ 1, 0, 0, 1, 0, 0 } },
+            { "ir", new double[]{ 1, 0, 0, 1, 0, 1 } },
+            { "ur", new double[]{ 1, 0, 0, 1, 1, 0 } },
+            { "_",  new double[]{ 1, 0, 0, 1, 1, 1 } },
+            { "-",  new double[]{ 1, 0, 1, 0, 0, 0 } }
+        };
+
+        private Dictionary<string, string> n2l = new Dictionary<string, string>()
+        {
+            { "b",  "000000" },
+            { "d",  "000001" },
+            { "f",  "000010" },
+            { "g",  "000011" },
+            { "h",  "000100" },
+            { "dg", "000101" },
+            { "k",  "000110" },
+            { "l",  "000111" },
+            { "m",  "001000" },
+            { "n",  "001001" },
+            { "p",  "001010" },
+            { "r",  "001011" },
+            { "s",  "001100" },
+            { "t",  "001101" },
+            { "v",  "001110" },
+            { "w",  "001111" },
+            { "ch", "010000" },
+            { "sh", "010001" },
+            { "th", "010010" },
+            { "ng", "010011" },
+            { "j",  "010100" },
+            { "a",  "010101" },
+            { "ay", "010110" },
+            { "e",  "010111" },
+            { "i",  "011000" },
+            { "ii", "011001" },
+            { "ai", "011010" },
+            { "aw", "011011" },
+            { "o",  "011100" },
+            { "uo", "011101" },
+            { "ou", "011110" },
+            { "ew", "011111" },
+            { "oi", "100000" },
+            { "ow", "100001" },
+            { "au", "100010" },
+            { "er", "100011" },
+            { "or", "100100" },
+            { "ir", "100101" },
+            { "ur", "100110" },
+            { "_",  "100111" },
+            { "-",  "101000" }
+        };
 
         private IntPtr network;
 
@@ -148,8 +217,9 @@ namespace SpeechRecognitionNN
             sbxWeights.Text = weightsPath;
             hiddenCount = Properties.Settings.Default.HiddenCount;
             hiddenCount2 = Properties.Settings.Default.HiddenCount2;
-            //outputCount = (int)Math.Ceiling( Math.Log(l2n.Count) / Math.Log(2));
-            outputCount = l2n.Count;
+            outputCount = (int)Math.Ceiling( Math.Log(l2n.Count) / Math.Log(2));
+            Console.WriteLine("Output Count: "+ outputCount);
+            //outputCount = l2n.Count;
             epochs = Properties.Settings.Default.Epochs;
             learningRate = Properties.Settings.Default.LearningRate;
             momentum = Properties.Settings.Default.Momentum;
@@ -199,7 +269,6 @@ namespace SpeechRecognitionNN
 
             input = new WaveIn();
             input.WaveFormat = new WaveFormat(RATE, 1);
-            //input.BufferMilliseconds = (int)((double)SIZE_BUFFER / RATE * 1000.0);
             input.BufferMilliseconds = 20;
             input.DataAvailable += new EventHandler<WaveInEventArgs>(DataAvailable);
 
@@ -234,26 +303,6 @@ namespace SpeechRecognitionNN
 
             timer1.Enabled = false;
 
-            /*
-            int SAMPLE_RESOLUTION = 16;
-            int BYTES_PER_POINT = SAMPLE_RESOLUTION / 8;
-            Int32[] vals = new Int32[frames.Length / BYTES_PER_POINT];
-            double[] Ys = new double[frames.Length / BYTES_PER_POINT];
-            double[] Xs = new double[frames.Length / BYTES_PER_POINT];
-            double[] Ys2 = new double[frames.Length / BYTES_PER_POINT];
-            double[] Xs2 = new double[frames.Length / BYTES_PER_POINT];
-            for (int i = 0; i < vals.Length; i++)
-            {
-                byte hByte = frames[i * 2 + 1];
-                byte lByte = frames[i * 2 + 0];
-                vals[i] = (short)((hByte << 8) | lByte);
-                Xs[i] = i;
-                Ys[i] = vals[i];
-                Xs2[i] = (double)i / Ys.Length * RATE / 1000.0;
-            }
-            */
-
-            //List<double[]> FFTsList = new List<double[]>();
             double[] d = new double[320];
             for (int i = 0; i < 640; i+= 2)
             {
@@ -261,30 +310,23 @@ namespace SpeechRecognitionNN
                 c = (c / 32768.0);
                 d[i / 2] = c * 10;
             }
-            //FFTsList.Add(FFT(d));
             double[] FFTs = d;
 
             foreach (double dd in FFTs)
             {
-                Console.WriteLine(dd);
+                //Console.WriteLine(dd);
             }
-
-            //for (int i = 0; i < 256; i++)
-            //{
-            //    Console.WriteLine(Ys[i] + ":" + d[i]);
-            //}
-
-            /*
+            
             Series series = new Series();
             series.ChartType = SeriesChartType.FastLine;
-            for (int i = 0; i < Xs.Length; i++)
+            for (int i = 0; i < 320; i++)
             {
-                series.Points.AddXY(Xs[i], Ys[i]);
+                series.Points.AddXY(i, FFTs[i]);
             }
             chartAudio.Series.Clear();
             chartAudio.Series.Add(series);
             chartAudio.Update();
-            */
+            
 
             //Ys2 = FFT(Ys);
             /*
@@ -313,7 +355,7 @@ namespace SpeechRecognitionNN
         /// Feeds FFT data to the network for evaluation
         /// </summary>
         /// <param name="myFFT"></param>
-        private char RunTest(object myFFT, char prevOutput = '/')
+        private string RunTest(object myFFT, string prevOutput = "/")
         {
             double[] FFT = (double[])myFFT;
             IntPtr ptr = Run(network, FFT, FFT.Length);
@@ -321,6 +363,7 @@ namespace SpeechRecognitionNN
             double[] output = new double[size];
             Marshal.Copy(ptr, output, 0, size);
 
+            /*
             string key = "";
             foreach (double d in output)
             {
@@ -329,19 +372,20 @@ namespace SpeechRecognitionNN
 
             if (n2l.ContainsKey(key))
             {
-                if (n2l[key] != prevOutput && n2l[key] != '_')
+                if (n2l[key].Equals(prevOutput) && n2l[key].Equals('-'))
                 {
                     rtbConsole.Invoke(new Action(() => rtbConsole.AppendText(n2l[key] + "\n")));
                     rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
                     return n2l[key];
                 }
             }
-            /*
+            */
+            
             for (int i = 0; i < output.Length; i++)
             {
                 rtbConsole.Invoke(new Action(() => rtbConsole.AppendText(output[i] + " ")));
             }
-            */
+            
             return prevOutput;
         }
 
@@ -435,23 +479,8 @@ namespace SpeechRecognitionNN
                         */
 
                         FFTsList.Add(d);
-                        //Thread.Sleep(100);
                     }
                 }
-
-                /*
-                foreach (double[] dd in FFTsList)
-                {
-                    foreach (double d in dd)
-                    {
-                        Console.Write(d + ", ");
-                    }
-                    Console.WriteLine();
-                }
-                */
-
-                //Console.WriteLine(FFTsList.Count);
-
                 //FFT inputs
                 double[][] FFTs = new double[FFTsList.Count][];
                 FFTsList.CopyTo(FFTs);
@@ -475,10 +504,6 @@ namespace SpeechRecognitionNN
 
                 string[][] lines = new string[linesList.Count][];
                 linesList.CopyTo(lines);
-                foreach (string[] ss in lines)
-                {
-                    //Console.WriteLine(ss.Length);
-                }
 
                 //Expected letters
                 double[][] letters = LetterToNumber(lines);
@@ -500,8 +525,6 @@ namespace SpeechRecognitionNN
                         flatLets[(i * letters[0].Length) + j] = letters[i][j];
                     }
                 }
-
-                //Console.WriteLine(flatLets.Length / l2n.Count);
 
                 network = CreateNetwork();
                 IntPtr inputs = CreateMatrixVector(flatFFTs, FFTs.Length, FFTs[0].Length);
@@ -594,314 +617,6 @@ namespace SpeechRecognitionNN
             }
         }
 
-        /*
-        /// <summary>
-        /// Trains the network based on the specified data
-        /// </summary>
-        private void StartTraining()
-        {
-            while (cbxTrain.Checked)
-            {
-                pbrEpochs.Invoke(new Action(() => pbrEpochs.Value = 0));
-
-                if (String.IsNullOrEmpty(dataPath))
-                {
-                    rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("No training data selected\n")));
-                    rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
-                    return;
-                }
-
-                //double[][] FFTs = null;
-                List<double[]> FFTsList = new List<double[]>();
-                string[][] lines = new string[data.Length][];
-                int width = 0; 
-                for (int k = 0; k < data.Length; k++)
-                {
-                    string text = File.ReadAllText(labels[k]);
-                    lines[k] = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-                    Console.WriteLine(lines[k].Length);
-
-                    using (WaveFileReader reader = new WaveFileReader(data[k]))
-                    {
-                        //int pow = (int)Math.Pow(2, Math.Ceiling(Math.Log(reader.Length) / Math.Log(2)));
-                        //int pow = 65536; //pow too small sometimes? biggest file...
-                        //width = pow / SIZE_BUFFER;
-                        width = 64;
-                        /*
-                        if (FFTs == null)
-                        {
-                            FFTs = new double[data.Length * (pow / 1024)][];
-                            //FFTs = new double[(data.Length * (pow / SIZE_BUFFER))][]; //number of separate files * number of 10 ms chunks
-                        }
-                        
-                        
-                        for (int j = 0; j < 64; j++)
-                        {
-                            byte[] bytesBuffer = new byte[1024];
-                            int r = reader.Read(bytesBuffer, 0, bytesBuffer.Length);
-                            double[] values = new double[1024];
-
-                            if (r < 1024)
-                            {
-                                Console.WriteLine(j);
-                                break;
-                            }
-
-                            //Console.WriteLine(r);
-                            //Console.WriteLine(bytesBuffer.Length);
-
-                            for (int i = 0; i < 1024; i += 2)
-                            {
-                                values[i] = (double)BitConverter.ToInt16(bytesBuffer, i);
-                                //Console.Write(BitConverter.ToInt16(bytesBuffer, i) + ", ");
-                            }
-                            FFTsList.Add(FFT(values));
-                            //Console.WriteLine(r);
-                        }
-
-                        /*
-                        for (int j = 0; j < (pow / SIZE_BUFFER); j++)
-                        {
-                            byte[] bytesBuffer = new byte[SIZE_BUFFER]; //1024?
-                            int r = reader.Read(bytesBuffer, 0, bytesBuffer.Length);
-
-                            int SAMPLE_RESOLUTION = 16;
-                            int BYTES_PER_POINT = SAMPLE_RESOLUTION / 8;
-                            Int32[] vals = new Int32[bytesBuffer.Length / BYTES_PER_POINT];
-                            double[] Ys = new double[bytesBuffer.Length / BYTES_PER_POINT];
-                            double[] Xs = new double[bytesBuffer.Length / BYTES_PER_POINT];
-                            double[] Ys2 = new double[bytesBuffer.Length / BYTES_PER_POINT];
-                            double[] Xs2 = new double[bytesBuffer.Length / BYTES_PER_POINT];
-                            for (int i = 0; i < vals.Length; i++)
-                            {
-                                byte hByte = bytesBuffer[i * 2 + 1];
-                                byte lByte = bytesBuffer[i * 2 + 0];
-                                vals[i] = (int)(short)((hByte << 8) | lByte);
-                                Xs[i] = i;
-                                Ys[i] = vals[i];
-                                if (r == 0)
-                                {
-                                    Ys[i] = 1;
-                                }
-                                Xs2[i] = (double)i / Ys.Length * RATE / 1000.0;
-                            }
-
-                            //wave
-                            Series series2 = new Series();
-                            series2.ChartType = SeriesChartType.FastLine;
-                            for (int i = 0; i < Xs.Length; i++)
-                            {
-                                series2.Points.AddXY(Xs[i], Ys[i]);
-                            }
-                            chartAudio.Invoke(new Action(() => chartAudio.Series.Clear()));
-                            chartAudio.Invoke(new Action(() => chartAudio.Series.Add(series2)));
-                            chartAudio.Invoke(new Action(() => chartAudio.Update()));
-
-                            //FFT
-                            Ys2 = FFT(Ys);
-
-                            series2 = new Series();
-                            series2.ChartType = SeriesChartType.FastLine;
-                            for (int i = 0; i < Xs2.Length / 2; i++)
-                            {
-                                series2.Points.AddXY(Xs2.Take(Xs2.Length / 2).ToArray()[i], Ys2.Take(Ys2.Length / 2).ToArray()[i]);
-                            }
-                            chartFreq.Invoke(new Action(() => chartFreq.Series.Clear()));
-                            chartFreq.Invoke(new Action(() => chartFreq.Series.Add(series2)));
-                            chartFreq.Invoke(new Action(() => chartFreq.Update()));
-
-                            FFTs[(k * (pow / SIZE_BUFFER)) + j] = Ys2;
-                        }
-                        
-                    }
-                }
-
-                //double[][] FFTs = new double[data.Length][];
-                //string[][] lines = new string[data.Length][];
-                List<double[]> FFTsList = new List<double[]>();
-                List<string[]> linesList = new List<string[]>();
-                for (int k = 0; k < data.Length; k++)
-                {
-                    string text = File.ReadAllText(labels[k]);
-                    linesList.Add(text.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
-
-                    string samples = File.ReadAllText(data[k]);
-                    string[] sample = samples.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                    double[] d;
-                    for (int i = 0; i < sample.Length / 160; i++)
-                    {
-                        d = new double[256];
-                        for (int j = 0; j < 160; j++)
-                        {
-                            d[j] = Double.Parse(sample[i * 160 + j]) * 1000;
-                        }
-
-                        /*
-                        double[] Ys2 = FFT(d);
-                        Series series2 = new Series();
-                        series2.ChartType = SeriesChartType.FastLine;
-                        for (int j = 0; j < d.Length; j++)
-                        {
-                            series2.Points.AddXY(j, Ys2[j]);
-                        }
-                        chartFreq.Invoke(new Action(() => chartFreq.Series.Clear()));
-                        chartFreq.Invoke(new Action(() => chartFreq.Series.Add(series2)));
-                        chartFreq.Invoke(new Action(() => chartFreq.Update()));
-
-                        FFTsList.Add(FFT(d));
-                        //Thread.Sleep(100);
-                    }
-                }
-
-                /*
-                foreach (double[] dd in FFTsList)
-                {
-                    foreach (double d in dd)
-                    {
-                        Console.Write(d + ", ");
-                    }
-                    Console.WriteLine();
-                }
-
-                //FFT inputs
-                double[][] FFTs = new double[FFTsList.Count][];
-                FFTsList.CopyTo(FFTs);
-                foreach (double[] dd in FFTs)
-                {
-                    foreach (double d in dd)
-                    {
-                        //Console.Write(d + ", ");
-                    }
-                    //Console.WriteLine();
-                }
-                //Console.WriteLine("\n\n" + FFTs.Length);
-                double[][] FFTs = new double[FFTsList.Count][];
-                FFTsList.CopyTo(FFTs);
-                foreach (double[] dd in FFTs)
-                {
-                    foreach (double d in dd)
-                    {
-                        //Console.Write(d + ", ");
-                    }
-                    //Console.WriteLine();
-                }
-
-                double[] flatFFTs = new double[FFTs.Length * FFTs[0].Length];
-                for (int i = 0; i < FFTs.Length; i++)
-                {
-                    for (int j = 0; j < FFTs[0].Length; j++)
-                    {
-                        flatFFTs[(i * FFTs[0].Length) + j] = FFTs[i][j];
-                    }
-                }
-
-                string[][] lines = new string[linesList.Count][];
-                linesList.CopyTo(lines);
-                foreach (string[] ss in lines)
-                {
-                    //Console.WriteLine(ss.Length);
-                }
-
-                //Expected letters
-                double[][] letters = LetterToNumber(lines);
-
-                //Console.WriteLine(letters.Length);
-
-                foreach (double[] sa in letters)
-                {
-                    foreach (double s in sa)
-                    {
-                        //Console.WriteLine(s);
-                    }
-                    //Console.WriteLine(sa.Length);
-                }
-                
-                double[] flatLets = new double[letters.Length * letters[0].Length];
-                for (int i = 0; i < letters.Length; i++)
-                {
-                    for (int j = 0; j < letters[0].Length; j++)
-                    {
-                        flatLets[(i * letters[0].Length) + j] = letters[i][j];
-                    }
-                }
-
-                network = CreateNetwork();
-                //IntPtr expected = CreateMatrixList(flatLets, letters.Length, letters[0].Length);
-                //IntPtr inputs = CreateMatrixList(flatFFTs, FFTs.Length, FFTs[0].Length);
-                //Console.WriteLine(FFTs.Length + ":" + FFTs[0].Length);
-                //Console.WriteLine(letters.Length + ":" + letters[0].Length);
-                IntPtr inputs = CreateMatrixVector(flatFFTs, FFTs.Length, FFTs[0].Length);
-                IntPtr expected = CreateMatrixVector(flatLets, letters.Length, letters[0].Length);
-
-                Init(network, FFTs[0].Length, hiddenCount, hiddenCount2, outputCount, weightsPath);
-
-                Series series = new Series();
-                series.ChartType = SeriesChartType.FastLine;
-                chartError.Invoke(new Action(() => chartError.ChartAreas[0].AxisX.Maximum = epochs));
-                chartError.Invoke(new Action(() => chartError.Series.Clear()));
-                chartError.Invoke(new Action(() => chartError.Series.Add(series)));
-                pbrEpochs.Invoke(new Action(() => pbrEpochs.Maximum = epochs));
-                rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("\nTraining Started...\n")));
-                rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
-                double t = 0;
-                int e;
-                for (e = 0; e < epochs; e++)
-                {
-                    Stopwatch stopwatch = new Stopwatch();
-                    stopwatch.Start();
-
-                    double d = Train(network, inputs, expected, learningRate, momentum);
-                    learningRate *= 1.1;
-
-                    if (e == 0)
-                    {
-                        //chartError.Invoke(new Action(() => chartError.ChartAreas[0].AxisY.Maximum = (((int)Math.Ceiling(d / 100.0)) * 100)));
-                    }
-
-                    //Console.WriteLine(d);
-                    chartError.Invoke(new Action(() => series.Points.AddXY(e, d)));
-                    chartError.Invoke(new Action(() => chartError.Update()));
-
-                    stopwatch.Stop();
-                    t += Convert.ToDouble(stopwatch.Elapsed.TotalSeconds);
-                    PrintEpoch(e, d, Convert.ToDouble(stopwatch.Elapsed.TotalSeconds)); //only on debug
-                    
-                    pbrEpochs.Invoke(new Action(() => pbrEpochs.PerformStep()));
-                    
-                    
-                    if (d < 0.01)
-                    {
-                        pbrEpochs.Invoke(new Action(() => pbrEpochs.Value = pbrEpochs.Maximum));
-                        break;
-                    }
-                    else if (cbxAbort.Checked)
-                    {
-                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training aborted!\t\t\tAverage epoch time: " + (t / e + 1) + "\n")));
-                        rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
-                        cbxTrain.Invoke(new Action(() => cbxTrain.CheckState = CheckState.Unchecked));
-                        cbxAbort.Invoke(new Action(() => cbxAbort.CheckState = CheckState.Unchecked));
-                        Export(network, weightsPath);
-                        return;
-                    }
-                    else if (Double.IsNaN(d)) //not working?
-                    {
-                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training failed!\t\t\tAverage epoch time: " + (t / e + 1) + "\n")));
-                        rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
-                        File.WriteAllText(weightsPath, String.Empty);
-                        continue;
-                    }
-                }
-                rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\t\t\tAverage epoch time: " + (t / e+1) + "\n")));
-                rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
-
-                Export(network, weightsPath);
-
-                Thread.Sleep(2000);
-            }
-        }
-        */
-
         /// <summary>
         /// Changes the data labels to network recognizable values
         /// </summary>
@@ -921,7 +636,8 @@ namespace SpeechRecognitionNN
             int i = 0, j = 0;
             for (int k = 0; k < length; k++)
             {
-                results[k] = l2n[lines[i][j].ToCharArray()[0]];
+                //Console.WriteLine(lines[i][j]);
+                results[k] = l2n[lines[i][j]]; //here
 
                 j++;
                 if (j >= lines[i].Length)
@@ -933,44 +649,6 @@ namespace SpeechRecognitionNN
 
             return results;
         }
-        /*
-        /// <summary>
-        /// Changes the data labels to network recognizable values
-        /// </summary>
-        /// <param name="lines"></param>
-        /// <param name="width"></param>
-        /// <returns></returns>
-        private double[][] LetterToNumber(string[][] lines, int width)
-        {
-            double[][] results = new double[lines.Length * width][];
-
-            for (int i = 0; i < lines.Length; i++)
-            {
-                for (int j = 0; j < width; j++)
-                {
-                    if (j >= lines[i].Length)
-                    {
-                        results[(i * width) + j] = l2n[' '];
-                    }
-                    else
-                    {
-                        results[(i * width) + j] = l2n[lines[i][j].ToCharArray()[0]];
-                    }
-                }
-            }
-
-            //
-            for (int i = 0; i < lines.Length; i++)
-            {
-                for (int j = 0; j < lines[i].Length; j++)
-                {
-                    results[(i * lines[i].Length) + j] = l2n[lines[i][j].ToCharArray()[0]];
-                }
-            }
-
-            return results;
-        }
-        */
 
         /// <summary>
         /// Prints epoch results while debuging
@@ -1002,7 +680,7 @@ namespace SpeechRecognitionNN
                 string samples = File.ReadAllText(data[k]);
                 string[] sample = samples.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                 double[] d;
-                char prevOutput = '/';
+                string prevOutput = "/";
                 for (int i = 0; i < sample.Length / 320; i++)
                 {
                     d = new double[320];
@@ -1017,136 +695,6 @@ namespace SpeechRecognitionNN
 
             rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
         }
-
-        /*
-        /// <summary>
-        /// Runs the test data through the network for validation
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnTest_Click(object sender, EventArgs e)
-        {
-            network = CreateNetwork();
-            int inputCount = GetInputSize(network, weightsPath);
-            Init(network, inputCount, hiddenCount, hiddenCount2, outputCount, weightsPath);
-
-            /*
-            for (int k = 0; k < data.Length; k++)
-            {
-                using (WaveFileReader reader = new WaveFileReader(data[k]))
-                {
-                    /*
-                    //int pow = (int)Math.Pow(2, Math.Ceiling(Math.Log(reader.Length) / Math.Log(2)));
-                    int pow = 65536; //pow too small sometimes? biggest file...
-
-                    for (int j = 0; j < (pow / SIZE_BUFFER); j++)
-                    {
-                        byte[] bytesBuffer = new byte[SIZE_BUFFER];
-                        reader.Read(bytesBuffer, 0, bytesBuffer.Length);
-
-                        int SAMPLE_RESOLUTION = 16;
-                        int BYTES_PER_POINT = SAMPLE_RESOLUTION / 8;
-                        Int32[] vals = new Int32[bytesBuffer.Length / BYTES_PER_POINT];
-                        double[] Ys = new double[bytesBuffer.Length / BYTES_PER_POINT];
-                        double[] Xs = new double[bytesBuffer.Length / BYTES_PER_POINT];
-                        double[] Ys2 = new double[bytesBuffer.Length / BYTES_PER_POINT];
-                        double[] Xs2 = new double[bytesBuffer.Length / BYTES_PER_POINT];
-                        for (int i = 0; i < vals.Length; i++)
-                        {
-                            byte hByte = bytesBuffer[i * 2 + 1];
-                            byte lByte = bytesBuffer[i * 2 + 0];
-                            vals[i] = (int)(short)((hByte << 8) | lByte);
-                            Xs[i] = i;
-                            Ys[i] = vals[i];
-                            Xs2[i] = (double)i / Ys.Length * RATE / 1000.0;
-                        }
-                        /*
-                        //wave
-                        Series series2 = new Series();
-                        series2.ChartType = SeriesChartType.FastLine;
-                        for (int i = 0; i < Xs.Length; i++)
-                        {
-                            series2.Points.AddXY(Xs[i], Ys[i]);
-                        }
-                        chartAudio.Invoke(new Action(() => chartAudio.Series.Clear()));
-                        chartAudio.Invoke(new Action(() => chartAudio.Series.Add(series2)));
-                        chartAudio.Invoke(new Action(() => chartAudio.Update()));
-
-                        //FFT
-                        Ys2 = FFT(Ys);
-                        series2 = new Series();
-                        series2.ChartType = SeriesChartType.FastLine;
-                        for (int i = 0; i < Xs2.Length / 2; i++)
-                        {
-                            series2.Points.AddXY(Xs2.Take(Xs2.Length / 2).ToArray()[i], Ys2.Take(Ys2.Length / 2).ToArray()[i]);
-                        }
-                        chartFreq.Invoke(new Action(() => chartFreq.Series.Clear()));
-                        chartFreq.Invoke(new Action(() => chartFreq.Series.Add(series2)));
-                        chartFreq.Invoke(new Action(() => chartFreq.Update()));
-
-                        Ys2 = FFT(Ys);
-
-                        /*
-                        Thread testingThread = new Thread(new ParameterizedThreadStart(RunTest));
-                        testingThread.IsBackground = true;
-                        testingThread.Start(Ys2);
-                        RunTest(Ys2);
-                    }
-                    
-                        for (int j = 0; j < 64; j++)
-                    {
-                        byte[] bytesBuffer = new byte[1024];
-                        int r = reader.Read(bytesBuffer, 0, bytesBuffer.Length);
-                        double[] values = new double[1024];
-
-                        //Console.WriteLine(r);
-                        //Console.WriteLine(bytesBuffer.Length);
-
-                        for (int i = 0; i < 1024; i += 2)
-                        {
-                            if (i < r)
-                            {
-                                values[i] = (double)BitConverter.ToInt16(bytesBuffer, i);
-                            }
-                            else
-                            {
-                                values[i] = 0.0;
-                            }
-                            //Console.Write(BitConverter.ToInt16(bytesBuffer, i) + ", ");
-                        }
-                        RunTest(FFT(values));
-                        // FFTs[(k * 64) + j] = FFT(values);
-                        //Console.WriteLine(r);
-                    }
-                }
-            }
-
-            //double[][] FFTs = new double[data.Length][];
-            string[][] lines = new string[data.Length][];
-            for (int k = 0; k < data.Length; k++)
-            {
-                string samples = File.ReadAllText(data[k]);
-                string[] sample = samples.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                double[] d;
-                for (int i = 0; i < sample.Length / 160; i++)
-                {
-                    d = new double[256];
-                    for (int j = 0; j < 160; j++)
-                    {
-                        d[j] = Double.Parse(sample[i * 160 + j]) * 1000;
-                    }
-                    RunTest(FFT(d));
-                }
-                //FFTs[k] = d;
-
-                //RunTest(d);
-            }
-
-
-            rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
-        }
-
-        */
 
         /// <summary>
         /// Begins feeds the network realtime audio input
