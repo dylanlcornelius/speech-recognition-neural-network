@@ -1,6 +1,6 @@
 #include "Network.h"
-
 #include "Matrix.h"
+
 #include <vector>
 #include <list>
 #include <iostream>
@@ -20,20 +20,6 @@ Network::~Network(){}
 
 extern "C" _declspec(dllexport) Network* CreateNetwork() {
 	return new Network();
-}
-
-extern "C" _declspec(dllexport) std::list<Matrix>* CreateMatrixList(double* data, int rows, int columns) {
-	std::list<Matrix>* matrixList = new std::list<Matrix>;
-
-	for (int i = 0; i < rows; i++) {
-		Matrix in = Matrix(1, columns);
-		for (int j = 0; j < columns; j++) {
-			in.matrix[0][j] = data[(i * columns) + j];
-		}
-		matrixList->push_back(in);
-	}
-
-	return matrixList;
 }
 
 extern "C" _declspec(dllexport) std::vector<Matrix>* CreateMatrixVector(double* data, int rows, int columns) {
@@ -72,9 +58,6 @@ extern "C" _declspec(dllexport)  double* Run(Network* network, double* data, int
 	for (int i = 0; i < columns; i++) {
 		matrix.matrix[0][i] = data[i];
 	}
-
-	//AllocConsole();
-	//freopen("CONOUT$", "w", stdout);
 
 	Matrix result = network->Run(matrix);
 
@@ -117,114 +100,20 @@ double Network::Train(std::vector<Matrix> inputs, std::vector<Matrix> expected, 
 	
 	SGD(learningRate, momentum);
 
-	//epochMSE = epochMSE / (expected.size() * expected.front().columns) * 100;
 	epochMSE = epochMSE / indices.size() * 100;
-
-	if (epochMSE < 0.0001 && !IsTrained)
-		IsTrained = true;
 
 	epochMSEprev = epochMSE;
 
-	/*
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 79; j++) {
-			if (i * 79 + j >= indices.size()) {
-				break;
-			}
-			Inputs = Matrix(inputs[indices[i * 79 + j]]);
-			Matrix Expected = Matrix(expected[indices[i * 79 + j]]);
-
-			Feedforward();
-			Backpropagation(Expected);
-
-			epochMSE += MSE(Expected).Sum();
-		}
-
-		epochMSE = epochMSE / ((expected.size() * expected.front().columns) / 2) * 100;
-		if (epochMSEprev < epochMSE) {
-			Momentum += 0.05;
-		}
-		else if (epochMSEprev > epochMSE) {
-			Momentum -= 0.05;
-		}
-		SGD(learningRate, Momentum);
-		
-		epochMSEprev =  epochMSE;
-	}
-	*/
-
 	return epochMSE;
 }
-
-/*
-//Trains the network for a given set of inputs
-double*  Network::Train(std::list<Matrix> inputs, std::list<Matrix> expected, int hiddenCount, int epochs, double learningRate) {
-
-	//rows = different inputs, cols = 1 input
-	Weights1 =		Matrix(inputs.front().columns, hiddenCount);
-	dWeights1 =		Matrix(inputs.front().columns, hiddenCount);
-	Bias1 = Matrix(std::vector<std::vector<double> >(1, std::vector<double>(hiddenCount, 1.0)));
-	dBias1 =		Matrix(1, hiddenCount);
-	Activation1 =	Matrix(1, hiddenCount);
-	Hidden =		Matrix(1, hiddenCount);
-
-	Weights2 =		Matrix(hiddenCount, OUTPUT_COUNT);
-	dWeights2 =		Matrix(hiddenCount, OUTPUT_COUNT);
-	Bias2 = Matrix(std::vector<std::vector<double> >(1, std::vector<double>(OUTPUT_COUNT, 1.0)));
-	dBias2 =		Matrix(1, OUTPUT_COUNT);
-	Activation2 =	Matrix(1, OUTPUT_COUNT);
-	Outputs =		Matrix(1, OUTPUT_COUNT);
-
-	double* epochMSE = new double[epochs];
-
-	Initialization();
-
-	//per batch
-	for (int i = 0; i < epochs; i++) {
-		//per input
-		double mse = 0;
-		auto inputsA = inputs.begin();
-		auto expectedA = expected.begin();
-		while (inputsA != inputs.end()) {
-			Inputs = Matrix(inputsA->matrix);
-			Matrix Expected = Matrix(expectedA->matrix);
-
-			Feedforward();
-			Backpropagation(Expected);
-
-			mse += MSE(Expected) * MSE(Expected);
-
-			++inputsA;
-			++expectedA;
-		}
-
-		SGD(learningRate);
-
-		mse = mse / expected.size() * 100;
-
-		PrintBatch(i, mse);
-		epochMSE[i] = mse;
-
-		//if (mse < 0.0001)
-		//	break;
-	}
-
-	IsTrained = true;
-
-	return epochMSE;
-}
-*/
 
 //Runs the network with a given set of inputs
 Matrix Network::Run(Matrix &inputs) {
 	Inputs = inputs;
 
-	if (IsTrained) {
-		Feedforward();
-	}
+	Feedforward();
 
 	return Outputs.Step();
-	//return Outputs.Round();
 }
 
 //Randomize the starting weights of the network
@@ -273,7 +162,7 @@ void Network::Feedforward() {
 
 //Calculate the gradient descents for the network weights.
 void Network::Backpropagation(Matrix &expected) {
-	dBias3 = (Outputs - expected) * (Outputs.Dot(Activation3.ApplySigmoidP())); //- (y - y)
+	dBias3 = (Outputs - expected) * Activation3.ApplySigmoidP();
 	dWeights3 = (Hidden2.Transpose().Dot(dBias3));
 
 	dBias2 = dBias3.Dot(Weights3.Transpose()) * (Activation2.ApplySigmoidP());
@@ -384,35 +273,6 @@ void Network::WriteSection(std::fstream &file, Matrix *matrix) {
 		file << "/,";
 	}
 	file << ":,";
-}
-
-#pragma endregion
-
-#pragma region PRINTING FUNCTIONS
-
-void Network::PrintResults(Matrix &expected, int &i) {
-	std::cout << "Iteration: " << i+1 << " ";
-	//std::cout << "Error: " << MSE(expected) << std::endl;
-	std::cout << "Input: ";
-	Inputs.PrintMatrix();
-	std::cout << ", Output: ";
-	Outputs.PrintMatrix();
-	std::cout << ", Expected: ";
-	expected.PrintMatrix();
-	std::cout << std::endl;
-}
-
-void Network::PrintBatch(int &i, double &mse) {
-	std::cout << "Iteration: " << i + 1 << " ";
-	std::cout << "Error: " << mse << std::endl;
-}
-
-void Network::PrintTest(Matrix &inputs) {
-	std::cout << "test: ";
-	inputs.PrintMatrix();
-	std::cout << "result: ";
-	Outputs.Step().PrintMatrix();
-	std::cout << std::endl;
 }
 
 #pragma endregion

@@ -2,7 +2,6 @@
 
 #include <assert.h>
 #include <iostream>
-
 #include <Windows.h>
 
 Matrix::Matrix(){}
@@ -18,7 +17,6 @@ Matrix::Matrix(int rows, int columns) {
 
 //Initialize Matrix
 Matrix::Matrix(std::vector<std::vector<double> > const &matrix) {
-	//checking for valid inputs
 	assert(matrix.size() != 0);
 
 	this->rows = matrix.size();
@@ -28,7 +26,6 @@ Matrix::Matrix(std::vector<std::vector<double> > const &matrix) {
 
 //Matrix addition
 Matrix Matrix::operator+(Matrix const &matrix2) {
-	//checking for valid inputs
 	assert(rows == matrix2.rows && columns == matrix2.columns);
 
 	Matrix result(rows, columns);
@@ -98,7 +95,6 @@ Matrix Matrix::MultiplyScalar(double const &scalar)
 		for (int j = 0; j < columns; j++)
 			result.matrix[i][j] = matrix[i][j] * scalar;
 
-	//return Matrix()?
 	return result;
 }
 
@@ -136,7 +132,7 @@ Matrix Matrix::Transpose() {
 	return result;
 }
 
-//
+//Round outputs near 1 or 0 to exactly 1 or 0
 Matrix Matrix::Step() {
 	Matrix result(rows, columns);
 
@@ -153,55 +149,16 @@ Matrix Matrix::Step() {
 	return result;
 }
 
-Matrix Matrix::Round() {
-	Matrix result(rows, columns);
-
-	int maxi = 0;
-	int maxj = 0;
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < columns; j++) {
-			if (matrix[i][j] > matrix[maxi][maxj]) {
-				maxi = i;
-				maxj = j;
-			}
-			
-		}
-	}
-
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < columns; j++) {
-			result.matrix[i][j] = 0;
-		}
-	}
-	result.matrix[maxi][maxj] = 1;
-
-	return result;
-}
-
-void Matrix::PrintMatrix() {
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < columns; j++)
-			std::cout << matrix[i][j] << " ";
-	}
-}
-
 #pragma region FUNCTIONS
 
 //Matrix application of a given function to every element
 Matrix Matrix::ApplyRandomize() {
-
-	//PrintMatrix();
-
-	//std::cout << rows << columns << std::endl;
-
 	Matrix result(rows, columns);
 
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {
-			//std::cout << "i: " << i << ", j: " << j << std::endl;
 			result.matrix[i][j] = Randomize(matrix[i][j]);
 		}
-		//std::cout << std::endl;
 	}
 
 	return result;
@@ -260,7 +217,6 @@ Matrix Matrix::ApplySigmoid() {
 
 //Sigmoid Function
 double Matrix::Sigmoid(double x) {
-	//std::cout << 1 / (1 + exp(-x)) << std::endl;
 	return 1 / (1 + exp(-x));
 }
 
@@ -276,7 +232,6 @@ Matrix Matrix::ApplySigmoidP() {
 }
 
 //Sigmoid Derivative Function
-//replace with Sigmoid(x)(1 - Sigmoid(x)) ?
 double Matrix::SigmoidDerivative(double x) {
 	if (x < 0.0000001) {
 		x = 0.00001;
@@ -290,7 +245,6 @@ Matrix Matrix::ApplySoftmax() {
 
 	double sum = 0.00001;
 
-	//matrix[i][j] - max?
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {
 			sum += exp(matrix[i][j]);
@@ -306,7 +260,7 @@ Matrix Matrix::ApplySoftmax() {
 	return result;
 }
 
-//Softmax Derivative Function
+//Softmax Derivative Function (Doesn't work)
 Matrix Matrix::ApplySoftmaxP() {
 	assert(rows == 1);
 	Matrix result(columns, columns);

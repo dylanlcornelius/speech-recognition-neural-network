@@ -22,8 +22,6 @@ public:
 	double Sum();
 	Matrix Transpose();
 	Matrix Step();
-	Matrix Round();
-	void PrintMatrix();
 
 	Matrix ApplyRandomize();
 	Matrix ApplyHyperbolic();
@@ -37,7 +35,6 @@ public:
 
 private:
 	double DotProduct(Matrix const &matrix2, int &m1Row, int &m2Col);
-
 	double Randomize(double x);
 	double HyperbolicTangent(double x);
 	double HyperbolicDerivative(double x);

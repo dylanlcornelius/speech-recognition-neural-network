@@ -3,13 +3,6 @@
 #include "Matrix.h"
 #include <list>
 
-/*
-extern "C" {
-	void Train(Network &network, std::list<Matrix> &inputs, std::list<Matrix> &expected, int &hiddenCount, int &trainingIterations, double &learningRate);
-	void Run(Network &network, Matrix &inputs);
-}
-*/
-
 class Network
 {
 public:
@@ -21,9 +14,7 @@ public:
 	int ReadSize(char* weightsPath);
 	void ReadWeights(char* weightsPath);
 	void WriteWeights(char* weightsPath);
-	//void Train(int hiddenCount, int epochs, double learningRate);
 	double Train(std::vector<Matrix> inputs, std::vector<Matrix> expected, double learningRate, double momentum);
-	//double* Train(std::list<Matrix> inputs, std::list<Matrix> expected, int hiddenCount, int epochs, double learningRate);
 	Matrix Run(Matrix &inputs);
 
 	~Network();
@@ -58,9 +49,6 @@ private:
 	Matrix dBias2;
 	Matrix dBias3;
 
-	//Temporary assertion while weights are not stored.
-	bool IsTrained;
-
 	void ReadSection(std::fstream &file, Matrix *matrix);
 	void WriteSection(std::fstream &file, Matrix *matrix);
 
@@ -68,8 +56,5 @@ private:
 	void Backpropagation(Matrix &expected);
 	void SGD(double &learningRate, double &momentum);
 	Matrix MSE(Matrix &expected);
-	void PrintResults(Matrix &expected, int &i);
-	void PrintBatch(int &i, double &mse);
-	void PrintTest(Matrix &inputs);
 };
 
