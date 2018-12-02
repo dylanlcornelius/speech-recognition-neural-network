@@ -108,11 +108,11 @@ double Network::Train(std::vector<Matrix> inputs, std::vector<Matrix> expected, 
 
 		epochMSE += MSE(Expected).Sum();
 
-		/*
-		if (i % 43 == 0) {
+		
+		if (i % (int)ceil(indices.size()/3) == 0) {
 			SGD(learningRate, momentum);
 		}
-		*/
+		
 	}
 	
 	SGD(learningRate, momentum);
