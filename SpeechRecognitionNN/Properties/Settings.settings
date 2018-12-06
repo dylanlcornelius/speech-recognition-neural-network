@@ -1,18 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SpeechRecognitionNN.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SpeechRecognitionForm.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="FFT" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="HiddenCount" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">8</Value>
+      <Value Profile="(Default)">16</Value>
     </Setting>
     <Setting Name="Epochs" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">500</Value>
     </Setting>
     <Setting Name="LearningRate" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.12</Value>
+      <Value Profile="(Default)">0.1</Value>
     </Setting>
     <Setting Name="DataPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -21,10 +21,10 @@
       <Value Profile="(Default)">Weights.txt</Value>
     </Setting>
     <Setting Name="Momentum" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.9</Value>
+      <Value Profile="(Default)">0.5</Value>
     </Setting>
     <Setting Name="HiddenCount2" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">4</Value>
+      <Value Profile="(Default)">8</Value>
     </Setting>
   </Settings>
 </SettingsFile>

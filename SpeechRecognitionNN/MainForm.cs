@@ -215,6 +215,8 @@ namespace SpeechRecognitionForm
         {
             InitializeComponent();
 
+            Properties.Settings.Default.Reset();
+
             #region SETTINGS
 
             dataPath = Properties.Settings.Default.DataPath;
@@ -369,8 +371,6 @@ namespace SpeechRecognitionForm
             {
                 key += d;
             }
-
-            Console.WriteLine(key);
 
             if (n2l.ContainsKey(key))
             {
@@ -531,9 +531,9 @@ namespace SpeechRecognitionForm
                 double min = 3.5;
                 double t = 0;
                 int e;
-                for (e = 0; e < epochs; e++)
+                Stopwatch stopwatch = new Stopwatch();
+                for (e = 1; e <= epochs; e++)
                 {
-                    Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
                     double d = Train(network, inputs, expected, learningRate, momentum);
@@ -541,19 +541,12 @@ namespace SpeechRecognitionForm
                     //learningRate *= .95;
                     //momentum *= 1.0001;
 
-                    chartError.Invoke(new Action(() => series.Points.AddXY(e+1, d)));
-                    chartError.Invoke(new Action(() => chartError.Update()));
-
-                    stopwatch.Stop();
-                    t += Convert.ToDouble(stopwatch.Elapsed.TotalSeconds);
-                    PrintEpoch(e, d, Convert.ToDouble(stopwatch.Elapsed.TotalSeconds));
-
-                    pbrEpochs.Invoke(new Action(() => pbrEpochs.PerformStep()));
+                    
 
                     if (d < 0.001)
                     {
                         pbrEpochs.Invoke(new Action(() => pbrEpochs.Value = pbrEpochs.Maximum));
-                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\t\t\tAverage epoch time: " + (t / e + 1) + "\n")));
+                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\t\t\tAverage epoch time: " + (t / e) + "\n")));
                         rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
                         Export(network, weightsPath);
                         Thread.Sleep(2000);
@@ -565,17 +558,26 @@ namespace SpeechRecognitionForm
                         rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
                         Export(network, weightsPath);
                         min = d;
-                        Console.WriteLine(min);
                     }
-                    else if (e % 500 == 0)
+                    else if (e % 10 == 0)
                     {
-                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training saved!\n")));
+                        chartError.Invoke(new Action(() => series.Points.AddXY(e, d)));
+                        chartError.Invoke(new Action(() => chartError.Update()));
+
+                        stopwatch.Stop();
+                        t += Convert.ToDouble(stopwatch.Elapsed.TotalSeconds);
+                        PrintEpoch(e, d, Convert.ToDouble(stopwatch.Elapsed.TotalSeconds));
+                        stopwatch = new Stopwatch();
+
+                        pbrEpochs.Invoke(new Action(() => pbrEpochs.PerformStep()));
+
+                        //rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training saved!\n")));
                         rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
                         Export(network, weightsPath);
                     }
                     else if (cbxAbort.Checked)
                     {
-                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training aborted!\t\t\tAverage epoch time: " + (t / e + 1) + "\n")));
+                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training aborted!\t\t\tAverage epoch time: " + (t / e) + "\n")));
                         rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
                         cbxTrain.Invoke(new Action(() => cbxTrain.CheckState = CheckState.Unchecked));
                         cbxAbort.Invoke(new Action(() => cbxAbort.CheckState = CheckState.Unchecked));
@@ -584,13 +586,13 @@ namespace SpeechRecognitionForm
                     }
                     else if (Double.IsNaN(d)) //not working?
                     {
-                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training failed!\t\t\tAverage epoch time: " + (t / e + 1) + "\n")));
+                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training failed!\t\t\tAverage epoch time: " + (t / e) + "\n")));
                         rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
                         break;
                     }
-                    else if (e == epochs-1)
+                    else if (e == epochs)
                     {
-                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\t\t\tAverage epoch time: " + (t / e + 1) + "\n")));
+                        rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\t\t\tAverage epoch time: " + (t / e) + "\n")));
                         rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
                         Thread.Sleep(2000);
                     }
@@ -639,7 +641,7 @@ namespace SpeechRecognitionForm
         //[ConditionalAttribute("DEBUG")]
         private void PrintEpoch(int i, double d, double t)
         {
-            rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Epoch: " + (i + 1) + "\tError: " + d + "\tTime: " + t + "\n")));
+            rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Epoch: " + i + "\tError: " + d + "\tTime: " + t + "\n")));
             rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
         }
 

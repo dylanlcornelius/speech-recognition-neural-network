@@ -37,7 +37,7 @@ namespace SpeechRecognitionForm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("16")]
         public int HiddenCount {
             get {
                 return ((int)(this["HiddenCount"]));
@@ -61,7 +61,7 @@ namespace SpeechRecognitionForm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
         public double LearningRate {
             get {
                 return ((double)(this["LearningRate"]));
@@ -97,7 +97,7 @@ namespace SpeechRecognitionForm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.9")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
         public double Momentum {
             get {
                 return ((double)(this["Momentum"]));
@@ -109,7 +109,7 @@ namespace SpeechRecognitionForm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
         public int HiddenCount2 {
             get {
                 return ((int)(this["HiddenCount2"]));
