@@ -215,8 +215,6 @@ namespace SpeechRecognitionForm
         {
             InitializeComponent();
 
-            Properties.Settings.Default.Reset();
-
             #region SETTINGS
 
             dataPath = Properties.Settings.Default.DataPath;
@@ -722,10 +720,19 @@ namespace SpeechRecognitionForm
 
         private void LoadData(string dataPath)
         {
-            if (!String.IsNullOrEmpty(dataPath))
+            try
             {
-                data = Directory.GetFiles(dataPath, "*.data", SearchOption.AllDirectories);
-                labels = Directory.GetFiles(dataPath, "*.txt", SearchOption.AllDirectories);
+                if (!String.IsNullOrEmpty(dataPath))
+                {
+                    data = Directory.GetFiles(dataPath, "*.data", SearchOption.AllDirectories);
+                    labels = Directory.GetFiles(dataPath, "*.txt", SearchOption.AllDirectories);
+                }
+            }
+            catch
+            {
+                sbxData.Text = "";
+                Properties.Settings.Default.DataPath = sbxData.Text;
+                Properties.Settings.Default.Save();
             }
         }
 
