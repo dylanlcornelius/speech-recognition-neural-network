@@ -567,7 +567,7 @@ namespace SpeechRecognitionForm
                         PrintEpoch(e, d, Convert.ToDouble(stopwatch.Elapsed.TotalSeconds));
                         stopwatch = new Stopwatch();
 
-                        pbrEpochs.Invoke(new Action(() => pbrEpochs.PerformStep()));
+                        pbrEpochs.Invoke(new Action(() => pbrEpochs.Value += 10));
 
                         //rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training saved!\n")));
                         rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
@@ -588,7 +588,7 @@ namespace SpeechRecognitionForm
                         rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
                         break;
                     }
-                    else if (e == epochs)
+                    if (e == epochs)
                     {
                         rtbConsole.Invoke(new Action(() => rtbConsole.AppendText("Training complete!\t\t\tAverage epoch time: " + (t / e) + "\n")));
                         rtbConsole.Invoke(new Action(() => rtbConsole.ScrollToCaret()));
