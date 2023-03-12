@@ -1,3 +1,2 @@
-# XOR-NN
-Neural network that finds the basic XOR gate outputs
-
+# ANN
+An artificial neural network dll
